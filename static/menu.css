@@ -1,0 +1,62 @@
+.menu {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 300px;
+    height: 100%;
+    background-color: #333;
+    transition: left 0.3s ease-in-out;
+    z-index: 1000;
+}
+
+.menu.active {
+    left: 0;
+}
+
+.menu ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 60px;
+}
+
+.menu ul li {
+    padding: 10px 20px;
+}
+
+.menu ul li a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.menu ul li a:hover,
+.menu ul li a:focus {
+    color: #66a992;
+}
+
+.toggle-nav {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1001;
+    color: #333;
+    text-decoration: none;
+    font-size: 24px;
+}
+
+.toggle-nav.active {
+    color: #fff;
+}
+
+.header {
+    position: relative;
+    z-index: 1;
+}
+
+/* 為小屏幕設備調整 logo 位置 */
+@media (max-width: 600px) {
+    .logo {
+        float: none;
+        margin: 0 auto;
+    }
+}

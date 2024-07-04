@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Send Emails</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h2>Send Emails</h2>
+        <form method="POST" action="{{ url_for('send_email') }}" enctype="multipart/form-data">
+            <label>Select recipient group:</label><br>
+            <select name="recipient_group" required>
+                <option value="" selected disabled hidden>請選擇</option>
+                {% for tag in taglist %}
+                <option value="{{ tag }}">{{ tag }}</option>
+                {% endfor %}
+            </select><br><br>
+
+            <label>Enter email subject:</label>
+            <input type="text" name="email_subject" required><br>
+
+            <label>Enter email content:</label>
+            <small>使用 {name} 標籤可添加對應姓名</small>
+            <textarea name="email_content" rows="10" cols="40" required></textarea><br>
+
+            <label>Attach a file:</label>
+            <input type="file" name="attachments" multiple><br><br>
+
+            <input type="submit" value="Send">
+        </form>
+    </div>
+
+    <!-- JavaScript for showing alert -->
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const status = urlParams.get('status');
+
+        if (status === 'sent') {
+            alert('Emails sent successfully!');
+        } else if (status === 'error') {
+            alert('Failed to send emails. Please try again.');
+        }
+    </script>
+</body>
+
+</html>

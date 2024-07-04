@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login to Outlook</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <h2>Login to your Outlook account</h2>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash">
+            {% for message in messages %}
+            <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <form method="POST" action="{{ url_for('index') }}">
+            <label>Email:</label><br>
+            <input type="text" name="email"><br><br>
+            <label>Password:</label><br>
+            <input type="password" name="password"><br><br>
+            <input type="submit" value="Login">
+        </form>
+    </div>
+</body>
+
+</html>

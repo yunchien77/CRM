@@ -1,0 +1,6 @@
+# Ignore the folder
+img/
+uploads/
+__pycache__/
+*.pyc
+.env
