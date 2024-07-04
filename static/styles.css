@@ -8,16 +8,43 @@
 body {
     font-family: serif;
     background-color: #f2f2f2;
-    padding: 30px;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    background-color: #f1f1f1;
+    color: black;
+    height: 5.5em;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.logo img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: -0.4em auto;
+}
+
+.logo {
+    width: 220px;
+    height: auto;
+    padding: 5px 0;
+    transition: all 0.5s ease 0s;
+    float: left;
+    cursor: pointer;
+    margin-left: 50px;
 }
 
 .container {
     max-width: 450px;
-    margin: 0 auto;
+    margin: 20px auto;
     background: #fff;
-    padding: 20px;
+    padding: 30px;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
@@ -60,7 +87,7 @@ input[type="submit"] {
     margin-bottom: 5px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 input[type="submit"] {
