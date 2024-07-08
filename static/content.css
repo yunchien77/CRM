@@ -1,3 +1,10 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     font-family: serif;
     background-color: #f0f0f0;
@@ -8,7 +15,7 @@ body {
 .header {
     background-color: #f1f1f1;
     color: black;
-    height: 4em;
+    height: 5.5em;
     padding: 10px;
     text-align: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
