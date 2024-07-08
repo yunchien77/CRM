@@ -4,12 +4,6 @@ from PIL import Image
 from pillow_heif import register_heif_opener
 from dotenv import load_dotenv
 import os
-
-'''
-os.system('apt-get install -y libglib2.0-0')
-os.system('apt-get install -y libsm6 libxext6')
-os.system('apt-get install -y libxrender-dev')
-'''
 import cv2
 
 register_heif_opener()
@@ -97,6 +91,7 @@ def ocr_image(img_path):
         # Get the OCR result as JSON
         result_json = result.json()
         print(result_json)
+        os.removedirs('CRM/img/')
 
         parsed_text = result_json['ParsedResults'][0]['ParsedText']
         return parsed_text
