@@ -64,6 +64,10 @@
         </form>
     </div>
 
+    <form id="logoutForm" action="{{ url_for('logout') }}" method="get">
+        <input type="submit" value="Logout">
+    </form>
+
     <div class="version">v.1</div>
 
     <!-- JavaScript for showing alert -->
@@ -76,6 +80,10 @@
         } else if (status === 'error') {
             alert('Failed to send emails. Please try again.');
         }
+
+        document.getElementById('logoutForm').addEventListener('submit', function (event) {
+            alert('Logout ><')
+        });
 
         function toggleMenu(event) {
             event.preventDefault();

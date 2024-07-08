@@ -230,5 +230,11 @@ def send_emails_to_customers(customers, subject, content, attachment_paths):
         print(f'Send mail failed. Error message: {str(e)}')
         return False
 
+@app.route('/logout')
+def logout():
+    session.pop('email', None)
+    session.pop('password', None)
+    return redirect(url_for('index'))
+
 if __name__ == '__main__':
     app.run(debug=True)
