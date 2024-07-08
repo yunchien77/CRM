@@ -49,7 +49,6 @@ def resize_image(img_path, max_size_kb=1024):
         print(f"Error resizing image: {e}")
         return None
 
-
 def ocr_image(img_path):
     # Convert HEIF to JPEG if needed
     if os.path.splitext(img_path)[1].lower() in ['.heif', '.heic']:
@@ -91,7 +90,7 @@ def ocr_image(img_path):
         # Get the OCR result as JSON
         result_json = result.json()
         print(result_json)
-        os.removedirs('CRM/img/')
+
 
         parsed_text = result_json['ParsedResults'][0]['ParsedText']
         return parsed_text

@@ -89,6 +89,12 @@ If there is information that does not fit into the above categories, you can ign
 If multiple values ​​only differ in language but have the same value, the Tradionnal Chinese or English value will prevail.
 """
 
+def remove_files(folder_path):
+    for filename in os.listdir(folder_path):
+        file_path = os.path.join(folder_path, filename)
+        if os.path.isfile(file_path):
+            os.remove(file_path) 
+
 def process_business_card(ocr_text):
     prompt = [
         {'role': 'system', 'content': system_message},
@@ -96,7 +102,7 @@ def process_business_card(ocr_text):
     ]
     response = get_completion_from_messages(prompt)
     print(response)
-
+    remove_files('img/')
     return split_data(response)
 
 def split_data(response):
@@ -196,81 +202,3 @@ def split_data(response):
     print("WEBSITE:", WEBSITE)
     
     return NAME, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE
-
-'''test
-ocr_text = ocr_image("img/IMG_2930_resized.jpg")
-response = '''
-{
-    "businessCard": [
-        {
-            "category": "Person Name",
-            "value": "Yi-Wen Chen,Ph.D."
-        },
-        {
-            "category": "Company Name",
-            "value": "China Medical University Hospital"
-        },
-        {
-            "category": "Job Title",
-            "value": "Deputy-Director, *-Dimension Center for Medical Research and Translation / Associate Professor, Graduate Institute of Biomedical Science, China Medical University / Bioinformatics and Medical Engineering, Asia University"
-        },
-        {
-            "category": "Address",
-            "value": "2 Yuh-Der Road, Taichung, Taiwan, 40447, R.O.C."
-        },
-        {
-            "category": "Telephone Number",
-            "value": "886-4-22967979 ext.3705"
-        },
-        {
-            "category": "Fax Number",
-            "value": "886-4-22994370"
-        },
-        {
-            "category": "Email",
-            "value": "evinchen@mail.cmuh.org.tw / evinchen@gmail.com"
-        },
-        {
-            "category": "Mobile Phone Number",
-            "value": "886-975-425358"
-        }
-    ]
-}
-'''
-split_data(response)
-'''
-
-response = '''
-{
-    "businessCard": [
-        {
-            "category": "Person Name",
-            "value": "陳柏翰"
-        },
-        {
-            "category": "Job Title",
-            "value": "CEO"
-        },
-        {
-            "category": "Email",
-            "value": "Pohan.chen@cancerfree.io"
-        },
-        {
-            "category": "Address",
-            "value": "郵便番号114台湾台北市内湖区瑞光路258巷56号3階 2/美國紐約州紐約市瓦里克街180號6樓，郵遞區號10014/114台灣台北 市內湖區瑞光路258巷56號3樓之2"
-        },
-        {
-            "category": "Telephone Number",
-            "value": "+886-905-071-010/+1-201-238-3117"
-        },
-        {
-            "category": "Company Name",
-            "value": "CancerFree"
-        },
-        {
-            "category": "Department",
-            "value": "Biotech"
-        }
-    ]
-}
-'''

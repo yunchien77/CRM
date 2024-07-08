@@ -61,7 +61,7 @@
             <form id="confirm-form">
                 <div class="form-group">
                     <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" required>
+                    <input type="text" id="name" name="name" required pattern=".*\S+.*">
                 </div>
                 <div class="form-group">
                     <label for="company">Company:</label>
@@ -198,6 +198,13 @@
             async function confirmData() {
                 const form = document.getElementById('confirm-form');
                 const formData = new FormData(form);
+
+                // Check if 'name' field is filled
+                const name = formData.get('name');
+                if (!name) {
+                    alert('Please fill in the required field: Name');
+                    return;
+                }
 
                 try {
                     const response = await fetch('/confirm', {
