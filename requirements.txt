@@ -1,0 +1,12 @@
+Flask==3.0.3
+MarkupSafe==2.1.5
+multidict==6.0.5
+numpy==1.21.0
+openai==0.28.0
+opencv-python==4.10.0.82
+pillow==10.4.0
+pillow_heif==0.17.0
+pypinyin==0.51.0
+python-dotenv==1.0.1
+requests==2.32.3
+Werkzeug==3.0.3

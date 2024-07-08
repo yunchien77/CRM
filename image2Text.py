@@ -1,10 +1,16 @@
-import cv2
 import requests
 from PIL import Image
-import numpy as np
+#import numpy as np
 from pillow_heif import register_heif_opener
 from dotenv import load_dotenv
 import os
+
+'''
+os.system('apt-get install -y libglib2.0-0')
+os.system('apt-get install -y libsm6 libxext6')
+os.system('apt-get install -y libxrender-dev')
+'''
+import cv2
 
 register_heif_opener()
 load_dotenv()
