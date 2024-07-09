@@ -178,7 +178,7 @@ def send_email():
                 else:
                     return redirect(url_for('send_email', status='error'))
 
-    return render_template('send_email.html', taglist=taglist)
+    return render_template('send_email.html', taglist=taglist, email=session['email'])
 
 def send_emails_to_customers(customers, subject, content, attachment_paths):
     email = session['email']

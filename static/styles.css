@@ -19,6 +19,7 @@ body {
     padding: 10px;
     text-align: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
 .logo img {
@@ -45,6 +46,7 @@ body {
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
 h2 {
@@ -76,7 +78,6 @@ small {
     font-size: 13px;
     color: #548870;
     font-weight: bold;
-    /*font-style: italic;*/
     margin-bottom: 8px;
 }
 
@@ -106,4 +107,35 @@ input[type="submit"]:hover {
     background-color: #960a00;
     color: white;
     border-radius: 4px;
+}
+
+.rightcolumn {
+    position: absolute;
+    top: 6px;
+    right: -450px;
+    display: flex;
+    align-items: center;
+    background: none;
+    padding: 0;
+    box-shadow: none;
+}
+
+.rightcolumn p {
+    margin-right: 10px;
+}
+
+.rightcolumn input[type="submit"] {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #d8e9e5;
+    color: black;
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 0;
+}
+
+.rightcolumn input[type="submit"]:hover {
+    background-color: #38747b;
+    color: white;
 }
