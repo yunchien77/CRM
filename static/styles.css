@@ -63,7 +63,9 @@ form {
 label {
     display: block;
     margin-bottom: 5px;
+    font-weight: bold;
     font-size: 18px;
+    color: #555;
 }
 
 textarea {
@@ -111,20 +113,20 @@ input[type="submit"]:hover {
     border-radius: 4px;
 }
 
-
 .rightcolumn {
-    position: absolute;
-    top: 6px;
-    right: -450px;
-    display: flex;
-    align-items: center;
-    background: none;
-    padding: 0;
-    box-shadow: none;
+    text-align: right;
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-bottom: 1px solid #ddd;
 }
 
 .rightcolumn p {
+    display: inline-block;
     margin-right: 10px;
+}
+
+.rightcolumn form {
+    display: inline-block;
 }
 
 .rightcolumn input[type="submit"] {
@@ -143,14 +145,33 @@ input[type="submit"]:hover {
     color: white;
 }
 
+.page-wrapper {
+    position: relative;
+}
+
 @media screen and (max-width: 768px) {
-    .container {
-        max-width: 90%;
-        padding: 20px;
+    .page-wrapper {
+        padding-top: 0;
     }
 
     .header {
-        height: auto;
+        position: static;
+    }
+
+    .rightcolumn {
+        position: static;
+        margin-bottom: 20px;
+    }
+
+    h2 {
+        margin-top: 0;
+    }
+
+    .container {
+        margin-top: 0;
+        max-width: 90%;
+        margin: 10px auto;
+        padding: 20px;
     }
 
     .logo {
@@ -158,36 +179,13 @@ input[type="submit"]:hover {
         margin: 0 auto;
     }
 
-    .rightcolumn {
-        position: static;
-        margin-bottom: 20px;
-        text-align: right;
-        padding: 10px;
-    }
-
-    .rightcolumn form {
-        display: inline-block;
-    }
-
-    .container {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .container>.rightcolumn {
-        order: -1;
-    }
-
     input[type="text"],
     input[type="password"],
     textarea,
-    select {
+    select,
+    input[type="submit"],
+    input[type="file"] {
         width: 100%;
-    }
-
-    .flash {
-        width: 90%;
-        margin: 10px auto;
     }
 }
 
@@ -197,14 +195,23 @@ input[type="submit"]:hover {
     }
 
     h2 {
-        font-size: 20px;
+        font-size: 22px;
     }
 
-    label {
-        font-size: 16px;
+    label,
+    input,
+    textarea,
+    select {
+        font-size: 14px;
     }
 
-    input[type="submit"] {
-        padding: 8px;
+    .rightcolumn {
+        font-size: 12px;
+    }
+
+    .rightcolumn input[type="submit"] {
+        font-size: 12px;
+        padding: 3px 8px;
+        width: auto;
     }
 }

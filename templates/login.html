@@ -24,7 +24,7 @@
     <nav class="menu">
         <ul>
             <!--<li class="current-item"><a href="#">Home</a></li>-->
-            <li><a href="/" target="_blank">Home</a></li>
+            <li><a href="/">Home</a></li>
             <li><a href="https://www.ragic.com/" target="_blank">Ragic</a></li>
             <li class="current-item"><a href="/login">Send Email</a></li>
             <li><a href="https://www.cancerfree.io/zh-tw/index" target="_blank">CancerFree</a></li>
@@ -54,10 +54,10 @@
         {% endif %}
         {% endwith %}
         <form method="POST" action="{{ url_for('index') }}">
-            <label>Email:</label><br>
-            <input type="text" name="email"><br><br>
-            <label>Password:</label><br>
-            <input type="password" name="password"><br><br>
+            <label>Email:</label>
+            <input type="text" name="email"><br>
+            <label>Password:</label>
+            <input type="password" name="password"><br>
             <input type="submit" value="Login">
         </form>
     </div>
