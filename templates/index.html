@@ -24,7 +24,6 @@
     <nav class="menu">
         <ul>
             <li class="current-item"><a href="#">Home</a></li>
-            <!--<li><a href="/" target="_blank">Home</a></li>-->
             <li><a href="https://www.ragic.com/" target="_blank">Ragic</a></li>
             <li><a href="/login">Send Email</a></li>
             <li><a href="https://chingshow.github.io/blogs/" target="_blank">Blog</a></li>
@@ -44,7 +43,7 @@
 
     <div class="content">
         <h2>Upload Business Card for CRM System</h2>
-        <form id="upload-form" method="POST" enctype="multipart/form-data">
+        <div id="upload-section">
             <div class="form-group">
                 <label for="file">Select Image:</label>
                 <input type="file" id="file" name="file"><br><br>
@@ -55,7 +54,13 @@
                     placeholder="Enter description"></textarea><br><br>
             </div>
             <input type="button" value="Upload" class="button" onclick="uploadFile()">
-        </form>
+        </div>
+
+        <div id="duplicate-section" style="display: none;">
+            <h3>Duplicate Entries Found</h3>
+            <div id="duplicate-entries"></div>
+        </div>
+
         <div id="result" class="uploaded-data" style="display: none;">
             <h3>Uploaded Data:</h3>
             <div id="filename-display"></div>
@@ -140,12 +145,6 @@
             </form>
         </div>
 
-        <div id="duplicate-section" style="display: none;">
-            <h3>Duplicate Entries Found</h3>
-            <div id="duplicate-entries"></div>
-            <button onclick="goBackToUpload()">Go Back to Upload</button>
-        </div>
-
         <div class="version">v.1</div>
 
         <script>
@@ -156,8 +155,11 @@
             }
 
             async function uploadFile() {
-                const form = document.getElementById('upload-form');
-                const formData = new FormData(form);
+                const fileInput = document.getElementById('file');
+                const descriptionInput = document.getElementById('description');
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                formData.append('description', descriptionInput.value);
 
                 try {
                     const response = await fetch('/upload', {
@@ -167,10 +169,8 @@
                     const result = await response.json();
 
                     if (result.success) {
-                        // Display filename
-                        document.getElementById('filename-display').innerHTML = `<p><strong>Filename:</strong> ${result.data.filename}</p>`;
-
-                        // Populate other form fields
+                        // Populate form fields
+                        // Populate form fields
                         document.getElementById('name').value = result.data.name || '';
                         document.getElementById('company').value = result.data.company || '';
                         document.getElementById('department1').value = result.data.department1 || '';
@@ -191,7 +191,23 @@
                         document.getElementById('website').value = result.data.website || '';
                         document.getElementById('confirm-description').value = result.data.description || '';
 
-                        // Show the result section
+                        // Display filename
+                        document.getElementById('filename-display').innerHTML = `<p><strong>Filename:</strong> ${result.data.filename}</p>`;
+
+                        // Check for duplicates
+                        if (result.data.duplicate && result.data.duplicate.length > 0) {
+                            const duplicateHtml = result.data.duplicate.map(entry => `
+                                <div>
+                                    <p>Name: ${entry.Name}, Company: ${entry.Company}, Title: ${entry.Title}</p>
+                                </div>
+                            `).join('');
+                            document.getElementById('duplicate-entries').innerHTML = duplicateHtml;
+                            document.getElementById('duplicate-section').style.display = 'block';
+                            document.getElementById('upload-section').style.display = 'none';
+                        }
+                        else {
+                            document.getElementById('duplicate-section').style.display = 'none';
+                        }
                         document.getElementById('result').style.display = 'block';
                     } else {
                         alert('Error: ' + result.error);
@@ -223,16 +239,6 @@
                     if (result.success) {
                         alert('Data confirmed successfully!');
                         window.location.reload();
-                    } else if (result.duplicate) {
-                        document.getElementById('duplicate-entries').innerHTML = result.duplicate.map(entry => `
-                            <div>
-                                <p>Name: ${entry.name}</p>
-                                <p>Company: ${entry.company}</p>
-                                <p>Email: ${entry.email1}</p>
-                                <p>Mobile: ${entry.mobile1}</p>
-                            </div>
-                        `).join('');
-                        document.getElementById('duplicate-section').style.display = 'block';
                     } else {
                         alert('Error: ' + result.error);
                     }
@@ -241,13 +247,8 @@
                     alert('Error confirming data.');
                 }
             }
-
-            function goBackToUpload() {
-                document.getElementById('duplicate-section').style.display = 'none';
-                document.getElementById('result').style.display = 'none';
-                document.getElementById('upload-form').reset();
-            }
         </script>
+    </div>
 </body>
 
 </html>

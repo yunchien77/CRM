@@ -13,6 +13,7 @@ from email import encoders
 from werkzeug.utils import secure_filename
 from get_data_from_ragic import get_data_by_tag
 from get_taglist import get_taglist
+from duplicatedName import searchName
 from dotenv import load_dotenv
 from pypinyin import lazy_pinyin
 
@@ -62,6 +63,9 @@ def upload():
             # Process business card using image2Class.py
             NAME, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE = process_business_card(ocr_text)
 
+            # 檢查重複名字
+            duplicate_records = searchName(NAME)
+        
             data = {
                 'filename': filename,
                 'description': description,
@@ -82,7 +86,8 @@ def upload():
                 'email2': EMAIL2,
                 'address1': ADDRESS1,
                 'address2': ADDRESS2,
-                'website': WEBSITE
+                'website': WEBSITE,
+                'duplicate': duplicate_records if duplicate_records else None
             }
 
             return jsonify({'success': True, 'data': data}), 200
