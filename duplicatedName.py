@@ -29,13 +29,14 @@ def searchName(name):
         duplicate_records = []
         for record_id, record in data.items():
             duplicate_records.append({
-                '姓名': record['姓名'],
-                '公司': record['公司'],
-                '職稱1': record['職稱1']
+                'Name': record['Name'],
+                'Company': record['Company'],
+                'Title': record['Title 1']
             })
 
         for record in duplicate_records:
-            print(f"姓名: {record['姓名']}, 公司: {record['公司']}, 職稱: {record['職稱1']}")
+            #print(f"姓名: {record['Name']}, 公司: {record['Company']}, 職稱: {record['Title']}")
+            print(record)
         return duplicate_records
 
     else:
@@ -43,4 +44,4 @@ def searchName(name):
         return 0
 
 
-searchName('陳柏翰')
+#searchName('陳柏翰')

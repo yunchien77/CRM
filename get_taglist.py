@@ -25,7 +25,7 @@ def get_taglist():
     taglist = []
 
     for key, value in data.items():
-        tags = value.get('標籤', [])
+        tags = value.get('Type', [])
         for tag in tags:
             if tag not in taglist:
                 taglist.append(tag)

@@ -28,9 +28,9 @@ def get_data_by_tag(target_tag):
     customers = []
 
     for key, value in data.items():
-        name = value.get('姓名', '')
-        email = value.get('電子郵件1', '')
-        tags = ', '.join(value.get('標籤', []))
+        name = value.get('Name', '')
+        email = value.get('Email 1', '')
+        tags = ', '.join(value.get('Type', []))
 
         if target_tag in tags:
             customers.append({'name': name, 'email': email, 'tags': tags})

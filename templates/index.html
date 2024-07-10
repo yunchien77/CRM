@@ -140,6 +140,12 @@
             </form>
         </div>
 
+        <div id="duplicate-section" style="display: none;">
+            <h3>Duplicate Entries Found</h3>
+            <div id="duplicate-entries"></div>
+            <button onclick="goBackToUpload()">Go Back to Upload</button>
+        </div>
+
         <div class="version">v.1</div>
 
         <script>
@@ -217,6 +223,16 @@
                     if (result.success) {
                         alert('Data confirmed successfully!');
                         window.location.reload();
+                    } else if (result.duplicate) {
+                        document.getElementById('duplicate-entries').innerHTML = result.duplicate.map(entry => `
+                            <div>
+                                <p>Name: ${entry.name}</p>
+                                <p>Company: ${entry.company}</p>
+                                <p>Email: ${entry.email1}</p>
+                                <p>Mobile: ${entry.mobile1}</p>
+                            </div>
+                        `).join('');
+                        document.getElementById('duplicate-section').style.display = 'block';
                     } else {
                         alert('Error: ' + result.error);
                     }
@@ -224,6 +240,12 @@
                     console.error('Error confirming data:', error);
                     alert('Error confirming data.');
                 }
+            }
+
+            function goBackToUpload() {
+                document.getElementById('duplicate-section').style.display = 'none';
+                document.getElementById('result').style.display = 'none';
+                document.getElementById('upload-form').reset();
             }
         </script>
 </body>
