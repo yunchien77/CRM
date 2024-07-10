@@ -52,7 +52,7 @@
             <h2>Send Emails</h2>
 
             <form method="POST" action="{{ url_for('send_email') }}" enctype="multipart/form-data" style="width: 100%;">
-                <label>Select recipient group:</label>
+                <label class="required-field">Select recipient group:</label>
                 <select name="recipient_group" required>
                     <option value="" selected disabled hidden>請選擇</option>
                     {% for tag in taglist %}
@@ -60,10 +60,10 @@
                     {% endfor %}
                 </select><br><br>
 
-                <label>Enter email subject:</label>
+                <label class="required-field">Enter email subject:</label>
                 <input type="text" name="email_subject" required><br>
 
-                <label>Enter email content:</label>
+                <label class="required-field">Enter email content:</label>
                 <small>使用 {name} 標籤可添加對應姓名</small>
                 <textarea name="email_content" rows="10" cols="40" required></textarea><br>
 

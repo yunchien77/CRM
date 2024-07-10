@@ -149,6 +149,11 @@ input[type="submit"]:hover {
     position: relative;
 }
 
+.required-field::before {
+    content: '*';
+    color: red;
+}
+
 @media screen and (max-width: 768px) {
     .page-wrapper {
         padding-top: 0;
