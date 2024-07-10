@@ -56,6 +56,8 @@
             <input type="button" value="Upload" class="button" onclick="uploadFile()">
         </div>
 
+        <div id="loading" style="display: none;">上傳中...</div>
+
         <div id="duplicate-section" style="display: none;">
             <h3>Duplicate Entries Found</h3>
             <div id="duplicate-entries"></div>
@@ -155,6 +157,9 @@
             }
 
             async function uploadFile() {
+                const loadingIndicator = document.getElementById('loading');
+                loadingIndicator.style.display = 'block';  // 顯示加載指示器
+
                 const fileInput = document.getElementById('file');
                 const descriptionInput = document.getElementById('description');
                 const formData = new FormData();
@@ -169,8 +174,7 @@
                     const result = await response.json();
 
                     if (result.success) {
-                        // Populate form fields
-                        // Populate form fields
+                        // 填充表單字段
                         document.getElementById('name').value = result.data.name || '';
                         document.getElementById('company').value = result.data.company || '';
                         document.getElementById('department1').value = result.data.department1 || '';
@@ -191,16 +195,16 @@
                         document.getElementById('website').value = result.data.website || '';
                         document.getElementById('confirm-description').value = result.data.description || '';
 
-                        // Display filename
+                        // 顯示文件名
                         document.getElementById('filename-display').innerHTML = `<p><strong>Filename:</strong> ${result.data.filename}</p>`;
 
-                        // Check for duplicates
+                        // 檢查重複項
                         if (result.data.duplicate && result.data.duplicate.length > 0) {
                             const duplicateHtml = result.data.duplicate.map(entry => `
-                                <div>
-                                    <p>Name: ${entry.Name}, Company: ${entry.Company}, Title: ${entry.Title}</p>
-                                </div>
-                            `).join('');
+                    <div>
+                        <p>Name: ${entry.Name}, Company: ${entry.Company}, Title: ${entry.Title}</p>
+                    </div>
+                `).join('');
                             document.getElementById('duplicate-entries').innerHTML = duplicateHtml;
                             document.getElementById('duplicate-section').style.display = 'block';
                             document.getElementById('upload-section').style.display = 'none';
@@ -215,17 +219,23 @@
                 } catch (error) {
                     console.error('Error uploading file:', error);
                     alert('Error uploading file.');
+                } finally {
+                    loadingIndicator.style.display = 'none';  // 隱藏加載指示器
                 }
             }
 
             async function confirmData() {
+                const loadingIndicator = document.getElementById('loading');
+                loadingIndicator.style.display = 'block';  // 顯示加載指示器
+
                 const form = document.getElementById('confirm-form');
                 const formData = new FormData(form);
 
-                // Check if 'name' field is filled
+                // 檢查 'name' 字段是否已填寫
                 const name = formData.get('name');
                 if (!name) {
                     alert('Please fill in the required field: Name');
+                    loadingIndicator.style.display = 'none';  // 隱藏加載指示器
                     return;
                 }
 
@@ -245,6 +255,8 @@
                 } catch (error) {
                     console.error('Error confirming data:', error);
                     alert('Error confirming data.');
+                } finally {
+                    loadingIndicator.style.display = 'none';  // 隱藏加載指示器
                 }
             }
         </script>
