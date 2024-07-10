@@ -16,6 +16,7 @@ def get_data_by_tag(target_tag):
     params = {
         'api': '',
         'v': 3,
+        'subtables': 0
     }
 
     API_ENDPOINT_LISTING_PAGE = f'https://{SERVER_URL}/{ACCOUNT_NAME}/{TAB}/{SHEET_INDEX}'
