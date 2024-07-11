@@ -19,6 +19,7 @@ from dotenv import load_dotenv
 from pypinyin import lazy_pinyin
 
 from concurrent.futures import ThreadPoolExecutor
+import uuid
 import os
 
 app = Flask(__name__)
@@ -30,6 +31,12 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 EMAIL_UPLOAD_FOLDER = 'uploads'
 app.config['EMAIL_UPLOAD_FOLDER'] = EMAIL_UPLOAD_FOLDER
 
+def remove_files(folder_path):
+    for filename in os.listdir(folder_path):
+        file_path = os.path.join(folder_path, filename)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+            
 # Route to display upload form
 @app.route('/')
 def home():
@@ -64,6 +71,7 @@ def upload():
         if ocr_text:
             # Process business card using image2Class.py
             NAME, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE = process_business_card(ocr_text)
+            remove_files('img/')
 
             # 檢查重複名字
             duplicate_records = searchName(NAME)
@@ -139,9 +147,11 @@ def multiupload():
 
 def process_and_upload_image(file):
     try:
-        filename = secure_filename(file.filename)
+        #filename = secure_filename(file.filename)
+        filename = f"{uuid.uuid4()}_{secure_filename(file.filename)}"
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
+        print(f"{filename} is saved.")
 
         ocr_text = ocr_image(file_path)
         if ocr_text:
@@ -169,11 +179,13 @@ def upload_multi_file():
         os.makedirs(app.config['UPLOAD_FOLDER'])
 
     results = []
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    with ThreadPoolExecutor(max_workers=5) as executor:
         future_to_file = {executor.submit(process_and_upload_image, file): file for file in files}
         for future in future_to_file:
             result = future.result()
             results.append(result)
+
+    remove_files('img/')
 
     return jsonify({'results': results}), 200
 

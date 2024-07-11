@@ -88,12 +88,7 @@ If there is a string "beijing taipei", it will be classified into the address, a
 If there is information that does not fit into the above categories, you can ignore it in the output.
 If multiple values ​​only differ in language but have the same value, the Tradionnal Chinese or English value will prevail.
 """
-
-def remove_files(folder_path):
-    for filename in os.listdir(folder_path):
-        file_path = os.path.join(folder_path, filename)
-        if os.path.isfile(file_path):
-            os.remove(file_path) 
+ 
 
 def process_business_card(ocr_text):
     prompt = [
@@ -102,7 +97,7 @@ def process_business_card(ocr_text):
     ]
     response = get_completion_from_messages(prompt)
     print(response)
-    remove_files('img/')
+    
     return split_data(response)
 
 def split_data(response):
