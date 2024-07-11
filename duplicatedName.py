@@ -15,7 +15,7 @@ def searchName(name):
         'api': '',
         'v': 3,
         'subtables': 0,
-        'where': '1001976,eq,'+name
+        'where': '1001976,like,'+name
     }
 
     API_ENDPOINT_LISTING_PAGE = f'https://{SERVER_URL}/{ACCOUNT_NAME}/{TAB}/{SHEET_INDEX}'

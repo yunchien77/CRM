@@ -97,13 +97,15 @@
                     if (result.results) {
                         let message = 'Upload results:\n';
                         result.results.forEach(item => {
-                            if (item.success) {
-                                message += `${item.filename}: Success\n`;
-                            } else {
+                            if (!item.success) {
                                 message += `${item.filename}: Failed - ${item.error}\n`;
                             }
                         });
-                        alert(message);
+                        if (message == 'Upload results:\n') {
+                            alert('Successfully uploaded!');
+                        } else {
+                            alert(message);
+                        }
                     } else {
                         alert('Error: ' + result.error);
                     }

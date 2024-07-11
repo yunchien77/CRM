@@ -21,14 +21,57 @@ def get_completion_from_messages(prompt, model="gpt-3.5-turbo", temperature=0, m
 
 delimiter = "####"
 system_message = """
-You will be provided with business card information. \
-The information will be delimited with \
-{{delimiter}} characters.
-Classify each piece of information into categories \
-such as Address, Phone Number, Name, etc. 
-Each category in the json is "unique". If each category has multiple values, separate them with a slash (/). Don’t have duplicate categories.
+You will be provided with business card information. 
+The information will be delimited with {{delimiter}} characters.
+Your task is to classify each piece of information into appropriate categories and output the result in a specific JSON format. Pay special attention to correctly identifying and classifying Person Name, Company Name, Department, and Job Title.
 
-JSON Format Example:
+Guidelines:
+1. Each category in the JSON should be unique.
+2. If a category has multiple values, separate them with a slash (/).
+3. Do not create duplicate categories.
+4. If information doesn't fit into the predefined categories, you may ignore it.
+5. If the provided information contains multiple "different" instances of email addresses, phone numbers, or addresses, ensure they are separated and classified accordingly in the output JSON. For example, if the string is "example@gmail.com 886979666666", they will be classified into emails and mobile phone numbers.
+
+Specific instructions for key categories:
+1. Person Name: This is typically the most prominently displayed name on the card.
+
+2. Company Name: 
+   - The name of the organization or business.
+   - This could be a company, hospital, clinic, medical center, or other healthcare institution.
+   - Examples: "ABC Corporation", "St. Mary's Hospital", "City General Medical Center"
+
+3. Department: 
+   - Common departments include: Research & Development, Marketing, Human Resources, Finance, Operations, Sales, Customer Service.
+   - In healthcare settings, this might include: Cardiology, Neurology, Oncology, Pediatrics, Emergency Medicine, Radiology, Ophthalmology, etc.
+   - Department names often end with words like "Department", "Division", "Team", "Unit", or "Ward".
+   - Be cautious not to confuse departments with job titles.
+
+4. Job Title:
+   - This describes the person's role or position within the company.
+   - Common examples: CEO, CFO, Director of Marketing, Senior Software Engineer, Project Manager, Sales Representative.
+   - Medical examples: Chief of Surgery, Head Nurse, Radiologist, Attending Physician, Resident Doctor.
+   - Job titles often include level indicators like "Senior", "Junior", "Assistant", "Associate".
+   - Some job titles may include department information (e.g., "Marketing Manager", "Head of Pediatrics").
+
+
+5. Contact Information:
+   - Carefully distinguish between Mobile Phone, Telephone (office), and Fax numbers.
+   - There may be multiple phone numbers or email addresses.
+
+6. Address:
+   - This could be a full street address, city, or multiple locations.
+
+7. Website:
+   - Usually starts with "www." or contains domain extensions like ".com", ".org", etc.
+
+When categorizing, consider the following:
+- Context is crucial. The same term might be a job title in one context and a department in another.
+- In medical settings, job titles, departments, and specialties can often overlap. Use your best judgment based on the overall context of the card.
+- Be aware of common abbreviations: "Dir." (Director), "VP" (Vice President), "R&D" (Research and Development), "HR" (Human Resources).
+
+If you're unsure about a classification, use your best judgment based on the context and common business card layouts.
+
+Output the classified information in the following JSON format:
 {
     "businessCard": [
         {
@@ -38,6 +81,10 @@ JSON Format Example:
         {
             "category": "Company Name",
             "value": "Company_value"
+        },
+        {
+            "category": "Department",
+            "value": "Department_value"
         },
         {
             "category": "Job Title",
@@ -70,23 +117,8 @@ JSON Format Example:
     ]
 }
 
-Categories:
-- Person Name: The name of the person on the business card.
-- Company Name: The name of the company associated with the person.
-- Department: Department information (if available).
-- Job Title: The job title or position of the person.
-- Mobile Phone Number: The mobile phone number of the person.
-- Telephone Number: The telephone number of the person.
-- Fax Number: The fax number of the person.
-- Email: The email address of the person.
-- Address: The physical address of the person or company.
-- Website: The website URL of the person or company.
-
-If the provided information contains multiple "different" instances of email addresses, phone numbers, or addresses, ensure they are separated and classified accordingly in the output JSON.
-For example, if the string is "example@gmail.com 886979666666", they will be classified into emails and mobile phone numbers.
-If there is a string "beijing taipei", it will be classified into the address, and the values ​​will be separated by slashes(/), for example, beijing/taipei.
-If there is information that does not fit into the above categories, you can ignore it in the output.
-If multiple values ​​only differ in language but have the same value, the Tradionnal Chinese or English value will prevail.
+Remember, accuracy in classification is crucial, especially for Person Name, Company Name, Department, and Job Title.
+Please make sure the output format is consistent with the JSON format.
 """
  
 
