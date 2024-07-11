@@ -23,7 +23,8 @@
 
     <nav class="menu">
         <ul>
-            <li class="current-item"><a href="#">Home</a></li>
+            <li class="current-item"><a href="#">Single (Confirmed)</a></li>
+            <li><a href="/multiupload">Multiple (Unconfirmed)</a></li>
             <li><a href="https://www.ragic.com/" target="_blank">Ragic</a></li>
             <li><a href="/login">Send Email</a></li>
             <li><a href="https://chingshow.github.io/blogs/" target="_blank">Blog</a></li>
@@ -42,7 +43,7 @@
     </div>
 
     <div class="content">
-        <h2>Upload Business Card for CRM System</h2>
+        <h2>Upload a Business Card for CRM System</h2>
         <div id="upload-section">
             <div class="form-group">
                 <label for="file">Select Image:</label>
@@ -56,7 +57,7 @@
             <input type="button" value="Upload" class="button" onclick="uploadFile()">
         </div>
 
-        <div id="loading" style="display: none;">上傳中...</div>
+        <div id="loading" style="display: none;">uploading...</div>
 
         <div id="duplicate-section" style="display: none;">
             <h3>Duplicate Entries Found</h3>
@@ -147,7 +148,7 @@
             </form>
         </div>
 
-        <div class="version">v.1</div>
+        <div class="version">v.2</div>
 
         <script>
             function toggleMenu(event) {

@@ -3,6 +3,7 @@ from werkzeug.utils import secure_filename
 from image2Text import ocr_image
 from image2Class import process_business_card
 from createData import createEntity
+from createData_unconfirmed import createEntity_unconfirmed
 import openai
 
 import smtplib
@@ -17,6 +18,7 @@ from duplicatedName import searchName
 from dotenv import load_dotenv
 from pypinyin import lazy_pinyin
 
+from concurrent.futures import ThreadPoolExecutor
 import os
 
 app = Flask(__name__)
@@ -129,7 +131,53 @@ def confirm():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
         
+###################################################
 
+@app.route('/multiupload')
+def multiupload():
+    return render_template('multiupload.html')
+
+def process_and_upload_image(file):
+    try:
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+
+        ocr_text = ocr_image(file_path)
+        if ocr_text:
+            NAME, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE = process_business_card(ocr_text)
+            
+            # 直接上傳到 Ragic
+            createEntity_unconfirmed(NAME, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE)
+            
+            return {'success': True, 'filename': filename}
+        else:
+            return {'success': False, 'filename': filename, 'error': 'OCR failed'}
+    except Exception as e:
+        return {'success': False, 'filename': filename, 'error': str(e)}
+
+@app.route('/multiupload', methods=['POST'])
+def upload_multi_file():
+    if 'files[]' not in request.files:
+        return jsonify({'error': 'No file part in the request'}), 400
+
+    files = request.files.getlist('files[]')
+    if not files or files[0].filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.makedirs(app.config['UPLOAD_FOLDER'])
+
+    results = []
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        future_to_file = {executor.submit(process_and_upload_image, file): file for file in files}
+        for future in future_to_file:
+            result = future.result()
+            results.append(result)
+
+    return jsonify({'results': results}), 200
+
+##################################################
 @app.route('/login', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
