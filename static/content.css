@@ -131,6 +131,10 @@ textarea {
     color: #191818;
 }
 
+.linkcolor {
+    color: black;
+}
+
 @media screen and (max-width: 768px) {
     .content {
         max-width: 90%;
