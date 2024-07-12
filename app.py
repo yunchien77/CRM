@@ -289,6 +289,7 @@ def send_emails_to_customers(customers, subject, content, attachment_paths):
                 continue
 
         server.quit()
+        remove_files('uploads/')
         return True
 
     except Exception as e:

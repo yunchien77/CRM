@@ -203,7 +203,12 @@
                         if (result.data.duplicate && result.data.duplicate.length > 0) {
                             const duplicateHtml = result.data.duplicate.map(entry => `
                     <div>
-                        <p>Name: ${entry.Name}, Company: ${entry.Company}, Title: ${entry.Title}</p>
+                        <p>
+                            Name: ${entry.Name}, Company: ${entry.Company}, Title: ${entry.Title}
+                            <br>
+                            <a href="https://ap12.ragic.com/cancerfree/forms5/4/${entry.Title}">Ragic Link</a>
+                        </p>
+                        
                     </div>
                 `).join('');
                             document.getElementById('duplicate-entries').innerHTML = duplicateHtml;

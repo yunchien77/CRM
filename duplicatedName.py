@@ -29,6 +29,7 @@ def searchName(name):
         duplicate_records = []
         for record_id, record in data.items():
             duplicate_records.append({
+                'ID': record_id,
                 'Name': record['Name'],
                 'Company': record['Company'],
                 'Title': record['Title 1']
