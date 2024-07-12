@@ -131,9 +131,16 @@ textarea {
     color: #191818;
 }
 
-.linkcolor {
+.duplicated-item a {
+    text-decoration: none;
     color: black;
 }
+
+.duplicated-item a:hover {
+    color: #6ab8bc;
+    text-decoration: none;
+}
+
 
 @media screen and (max-width: 768px) {
     .content {
