@@ -93,7 +93,7 @@ def ocr_image(img_path):
 
 
         parsed_text = result_json['ParsedResults'][0]['ParsedText']
-        return parsed_text
+        return parsed_text, img_path
 
     else:
         print("Error: Unsupported or unknown image file format.")

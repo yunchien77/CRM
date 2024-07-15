@@ -4,6 +4,7 @@ from image2Text import ocr_image
 from image2Class import process_business_card
 from createData import createEntity
 from createData_unconfirmed import createEntity_unconfirmed
+from OnedriveUpload import uploadFile
 import openai
 
 import smtplib
@@ -57,7 +58,7 @@ def upload():
         if not os.path.exists(app.config['UPLOAD_FOLDER']):
             os.makedirs(app.config['UPLOAD_FOLDER'])
 
-        filename = secure_filename(file.filename)
+        filename = f"{uuid.uuid4()}_{secure_filename(file.filename)}"
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
         print("File saved:", file_path)
@@ -66,12 +67,12 @@ def upload():
         print("Description:", description)
 
         # Call OCR function from image2Text.py
-        ocr_text = ocr_image(file_path)
+        ocr_text, file_path = ocr_image(file_path)
+        session['file_path'] = file_path
 
         if ocr_text:
             # Process business card using image2Class.py
             NAME, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE = process_business_card(ocr_text)
-            remove_files('img/')
 
             # 檢查重複名字
             duplicate_records = searchName(NAME)
@@ -134,7 +135,11 @@ def confirm():
         WEBSITE = request.form['website']
         DESCRIPTION = request.form['description']
 
-        createEntity(NAME, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE, DESCRIPTION)
+        url = uploadFile(session['file_path'])
+        session.pop('file_path', None)
+        createEntity(NAME, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE, DESCRIPTION, url)
+        remove_files('img/')
+
         return jsonify({'success': True}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 400
@@ -153,12 +158,14 @@ def process_and_upload_image(file):
         file.save(file_path)
         print(f"{filename} is saved.")
 
-        ocr_text = ocr_image(file_path)
+        ocr_text, file_path = ocr_image(file_path)
+
         if ocr_text:
             NAME, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE = process_business_card(ocr_text)
             
+            url = uploadFile(file_path)
             # 直接上傳到 Ragic
-            createEntity_unconfirmed(NAME, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE)
+            createEntity_unconfirmed(NAME, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE, url)
             
             return {'success': True, 'filename': filename}
         else:

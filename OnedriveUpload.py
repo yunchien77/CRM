@@ -4,10 +4,6 @@ import json
 import requests
 import webbrowser
 
-import uuid
-from werkzeug.utils import secure_filename
-import cv2
-
 class FileSystemTokenCache(msal.SerializableTokenCache):
     def __init__(self, file_path):
         super().__init__()
@@ -69,17 +65,19 @@ def upload_file_to_onedrive(access_token, file_path, file_name, folder_path):
         file_info = response.json()
         print(f"File uploaded to: {file_info.get('parentReference', {}).get('path', 'Unknown location')}")
         print(f"Web URL: {file_info.get('webUrl')}")
+        return file_info.get('webUrl')
     else:
         print(f"Error uploading file. Status code: {response.status_code}")
         print(response.text)
+        return 
 
-def main():
+def uploadFile(file_path):
     # 設置您的 Azure 應用程序憑證
     client_id = "6387fe9f-a72d-46c7-9b37-d454976438c0"
     tenant_id = "87545bf3-2cb8-410a-a96c-64b5dca46d4c"
     scopes = ['https://graph.microsoft.com/Files.ReadWrite.All']
 
-    # 設置令牌緩存
+    # 設置 token 緩存
     cache = FileSystemTokenCache('./token_cache.json')
 
     # 創建 MSAL 應用程序
@@ -89,13 +87,11 @@ def main():
         token_cache=cache
     )
 
-    # 獲取訪問令牌
+    # 獲取訪問 token
     access_token = get_access_token(app, scopes)
     if not access_token:
         print("Failed to acquire access token.")
         return
-
-    file_path = f'img/1.png'
         
     if not os.path.exists(file_path):
         print("File does not exist. Please enter a valid file path.")
@@ -104,7 +100,6 @@ def main():
         file_name = os.path.basename(file_path)
         folder_path = "BusinessCards"
             
-        upload_file_to_onedrive(access_token, file_path, file_name, folder_path)
+        url = upload_file_to_onedrive(access_token, file_path, file_name, folder_path)
+        return url
 
-if __name__ == "__main__":
-    main()
