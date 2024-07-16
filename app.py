@@ -16,7 +16,6 @@ from werkzeug.utils import secure_filename
 from get_data_from_ragic import get_data_by_tag
 from get_taglist import get_taglist
 from duplicatedName import searchName
-from dotenv import load_dotenv
 from pypinyin import lazy_pinyin
 
 from concurrent.futures import ThreadPoolExecutor

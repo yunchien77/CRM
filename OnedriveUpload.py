@@ -3,6 +3,9 @@ import msal
 import json
 import requests
 import webbrowser
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class FileSystemTokenCache(msal.SerializableTokenCache):
     def __init__(self, file_path):
@@ -73,8 +76,8 @@ def upload_file_to_onedrive(access_token, file_path, file_name, folder_path):
 
 def uploadFile(file_path):
     # 設置您的 Azure 應用程序憑證
-    client_id = "6387fe9f-a72d-46c7-9b37-d454976438c0"
-    tenant_id = "87545bf3-2cb8-410a-a96c-64b5dca46d4c"
+    client_id = os.getenv('CILENT_ID')
+    tenant_id = os.getenv('TENANT_ID')
     scopes = ['https://graph.microsoft.com/Files.ReadWrite.All']
 
     # 設置 token 緩存
