@@ -49,7 +49,7 @@ def resize_image(img_path, max_size_kb=1024):
         print(f"Error resizing image: {e}")
         return None
 
-def ocr_image(img_path):
+def ocr_image(img_path, ocr_engine, ocr_language):
     # Convert HEIF to JPEG if needed
     if os.path.splitext(img_path)[1].lower() in ['.heif', '.heic']:
         jpg_path = os.path.splitext(img_path)[0] + ".jpg"
@@ -79,8 +79,10 @@ def ocr_image(img_path):
         files = {"file": ("image." + image_format, img_encoded.tobytes(), "image/" + image_format)}
         data = {
             "apikey": api_key,
-            "OCREngine": 2, # engine 1(multi-language) or 2(character)
-            "language": 'cht',  # default: eng
+            #"OCREngine": 2, # engine 1(multi-language) or 2(character)
+            #"language": 'cht',  # default: eng
+            "OCREngine": ocr_engine, # engine 1(multi-language) or 2(character)
+            "language": ocr_language
             #"isOverlayRequired": True   # provide location info
         }
 

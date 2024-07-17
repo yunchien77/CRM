@@ -47,8 +47,18 @@
         <div id="upload-section">
             <div class="form-group">
                 <label for="file">Select Image:</label>
-                <input type="file" id="file" name="file"><br><br>
+                <input type="file" id="file" name="file"><br>
             </div>
+            <div class="span8">
+                <label>Language:</label>
+                <select id="ocrLanguage" name="ocrLanguage" class="form-control valid selection">
+                    <option value="chs">Chinese (Simplified)</option>
+                    <option value="cht" selected="selected">Chinese (Traditional)</option>
+                    <option value="eng">English</option>
+                    <option value="jpn">Japanese</option>
+                </select>
+                <small class="warning">Please prioritize the recognition of non-Japanese business cards.</small>
+            </div><br>
             <div class="form-group">
                 <label for="description">Description:</label>
                 <textarea id="description" name="description" rows="4"

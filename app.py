@@ -65,8 +65,15 @@ def upload():
         description = request.form.get('description', '')
         print("Description:", description)
 
+        # Determine OCR engine based on selected language
+        ocr_language = request.form.get('ocrLanguage', 'cht')
+        if ocr_language in ['chs', 'cht', 'eng']:
+            ocr_engine = 2
+        else:
+            ocr_engine = 1
+
         # Call OCR function from image2Text.py
-        ocr_text, file_path = ocr_image(file_path)
+        ocr_text, file_path = ocr_image(file_path, ocr_engine, ocr_language)
         session['file_path'] = file_path
 
         if ocr_text:
@@ -149,7 +156,7 @@ def confirm():
 def multiupload():
     return render_template('multiupload.html')
 
-def process_and_upload_image(file):
+def process_and_upload_image(file, ocr_engine, ocr_language):
     try:
         #filename = secure_filename(file.filename)
         filename = f"{uuid.uuid4()}_{secure_filename(file.filename)}"
@@ -157,7 +164,7 @@ def process_and_upload_image(file):
         file.save(file_path)
         print(f"{filename} is saved.")
 
-        ocr_text, file_path = ocr_image(file_path)
+        ocr_text, file_path = ocr_image(file_path, ocr_engine, ocr_language)
 
         if ocr_text:
             NAME, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE = process_business_card(ocr_text)
@@ -184,9 +191,15 @@ def upload_multi_file():
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.makedirs(app.config['UPLOAD_FOLDER'])
 
+    ocr_language = request.form.get('ocrLanguage', 'cht')
+    if ocr_language in ['chs', 'cht', 'eng']:
+        ocr_engine = 2
+    else:
+        ocr_engine = 1
+
     results = []
     with ThreadPoolExecutor(max_workers=5) as executor:
-        future_to_file = {executor.submit(process_and_upload_image, file): file for file in files}
+        future_to_file = {executor.submit(process_and_upload_image, file, ocr_engine, ocr_language): file for file in files}
         for future in future_to_file:
             result = future.result()
             results.append(result)
