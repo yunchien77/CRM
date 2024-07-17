@@ -12,7 +12,8 @@ FIELD_date = '1002656'
 FIELD_method = '1002657'
 FIELD_person = '1002659'
 FIELD_content = '1002660'
-
+FIELD_name = '1002923'
+FIELD_title = '1002924'
 
 load_dotenv()
 API_KEY = os.getenv('RAGIC_API_KEY')
@@ -31,18 +32,17 @@ def uploadHistory(customers, email_subject, email_content, date, username):
     for customer in customers:
         id = customer['id']
         username = username.split('@')[0]
-
-        print(id)
-        print(date)
-        print(username)
-        print(email_subject+'\n'+email_content)
+        name = customer['name']
+        title = customer['title']
 
         data = {
             FIELD_id: id,
             FIELD_date: date,        
             FIELD_method: '郵件',     
             FIELD_person: username,       
-            FIELD_content: email_subject+'\n'+email_content,       
+            FIELD_content: email_subject+'\n'+email_content,   
+            FIELD_name: name,
+            FIELD_title: title    
         }
 
         response = requests.post(API_ENDPOINT_LISTING_PAGE, params=params, json=data, headers={'Authorization': 'Basic '+API_KEY})

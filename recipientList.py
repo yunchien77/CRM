@@ -31,11 +31,12 @@ def get_recipient_info(target_tag):
     for key, value in data.items():
         id = value.get('ID', '')
         name = value.get('Name', '')
+        title = value.get('Title 1', '')
         email = value.get('Email 1', '')
         tags = ', '.join(value.get('Type', []))
 
         if target_tag in tags:
-            customers.append({'id': id, 'name': name, 'email': email, 'tags': tags})
+            customers.append({'id': id, 'name': name, 'email': email, 'tags': tags, 'title': title})
 
     for customer in customers:
         print(f"ID: {customer['id']}\n姓名: {customer['name']}\n電子郵件: {customer['email']}\n標籤: {customer['tags']}")
