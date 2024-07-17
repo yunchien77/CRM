@@ -5,6 +5,7 @@ from image2Class import process_business_card
 from createData import createEntity
 from createData_unconfirmed import createEntity_unconfirmed
 from OnedriveUpload import uploadFile
+from emailHistory import uploadHistory
 import openai
 
 import smtplib
@@ -13,8 +14,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 from werkzeug.utils import secure_filename
-from get_data_from_ragic import get_data_by_tag
-from get_taglist import get_taglist
+from recipientList import get_recipient_info
+from getTagList import get_taglist
 from duplicatedName import searchName
 from pypinyin import lazy_pinyin
 
@@ -274,10 +275,12 @@ def send_email():
                     attachment.save(attachment_path)
                     attachment_paths.append(attachment_path)
 
-            customers = get_data_by_tag(recipient_group)
+            customers = get_recipient_info(recipient_group)
             if customers:
                 success = send_emails_to_customers(customers, email_subject, email_content, attachment_paths)
                 if success:
+                    date = datetime.now().strftime('%Y/%m/%d')
+                    uploadHistory(customers, email_subject, email_content, date, session['email'])
                     return redirect(url_for('send_email', status='sent'))
                 else:
                     return redirect(url_for('send_email', status='error'))

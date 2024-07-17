@@ -2,7 +2,7 @@ import requests
 from dotenv import load_dotenv
 import os
 
-def get_data_by_tag(target_tag):
+def get_recipient_info(target_tag):
     # Example URL and API Key for Ragic, replace with actual values
 
     load_dotenv()
@@ -16,7 +16,8 @@ def get_data_by_tag(target_tag):
     params = {
         'api': '',
         'v': 3,
-        'subtables': 0
+        'subtables': 0,
+        'where': '1002025,eq,'+target_tag
     }
 
     API_ENDPOINT_LISTING_PAGE = f'https://{SERVER_URL}/{ACCOUNT_NAME}/{TAB}/{SHEET_INDEX}'
@@ -28,19 +29,20 @@ def get_data_by_tag(target_tag):
     customers = []
 
     for key, value in data.items():
+        id = value.get('ID', '')
         name = value.get('Name', '')
         email = value.get('Email 1', '')
         tags = ', '.join(value.get('Type', []))
 
         if target_tag in tags:
-            customers.append({'name': name, 'email': email, 'tags': tags})
+            customers.append({'id': id, 'name': name, 'email': email, 'tags': tags})
 
     for customer in customers:
-        print(f"姓名: {customer['name']}\n電子郵件: {customer['email']}\n標籤: {customer['tags']}")
+        print(f"ID: {customer['id']}\n姓名: {customer['name']}\n電子郵件: {customer['email']}\n標籤: {customer['tags']}")
         print("------------------------------")
 
     return customers
 
 # Example usage
-#customers = get_data_by_tag('朋友')
+#customers = get_recipient_info('朋友')
 #print(customers)
