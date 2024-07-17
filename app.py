@@ -130,6 +130,7 @@ def confirm():
         TITLE1 = request.form['title1']
         TITLE2 = request.form['title2']
         TITLE3 = request.form['title3']
+        ETITLE = request.form['emailtitle']
         EMAIL1 = request.form['email1']
         EMAIL2 = request.form['email2']
         MOBILE1 = request.form['mobile1']
@@ -147,7 +148,7 @@ def confirm():
 
         url = uploadFile(session['file_path'])
         session.pop('file_path', None)
-        createEntity(NAME, FIRST, LAST, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE, DESCRIPTION, url)
+        createEntity(NAME, FIRST, LAST, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, ETITLE, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE, DESCRIPTION, url)
         remove_files('img/')
 
         return jsonify({'success': True}), 200
