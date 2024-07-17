@@ -33,7 +33,7 @@ Guidelines:
 5. If the provided information contains multiple "different" instances of email addresses, phone numbers, or addresses, ensure they are separated and classified accordingly in the output JSON. For example, if the string is "example@gmail.com 886979666666", they will be classified into emails and mobile phone numbers.
 
 Specific instructions for key categories:
-1. Person Name: This is typically the most prominently displayed name on the card.
+1. Person Name: Split the name into first name and last name
 
 2. Company Name: 
    - The name of the organization or business.
@@ -77,6 +77,14 @@ Output the classified information in the following JSON format:
         {
             "category": "Person Name",
             "value": "Name_value"
+        },
+        {
+            "category": "First Name",
+            "value": "FirstName_value"
+        },
+        {
+            "category": "Last Name",
+            "value": "LastName_value"
         },
         {
             "category": "Company Name",
@@ -134,6 +142,8 @@ def process_business_card(ocr_text):
 
 def split_data(response):
     NAME = None
+    FIRST_NAME= None
+    LAST_NAME=None
     COMPANY = None
     DEPART1 = None
     DEPART2 = None
@@ -159,6 +169,10 @@ def split_data(response):
 
         if category == 'Person Name':
             NAME = value
+        elif category == 'First Name':
+            FIRST_NAME = value
+        elif category == 'Last Name':
+            LAST_NAME = value
         elif category == 'Company Name':
             COMPANY = value
         elif category == 'Department':
@@ -210,6 +224,8 @@ def split_data(response):
             WEBSITE = value
     
     print("NAME:", NAME)
+    print("FIRST NAME:", FIRST_NAME)
+    print("LAST NAME:", LAST_NAME)
     print("COMPANY:", COMPANY)
     print("DEPARTMENT1:", DEPART1)
     print("DEPARTMENT2:", DEPART2)
@@ -228,4 +244,4 @@ def split_data(response):
     print("ADDRESS2:", ADDRESS2)
     print("WEBSITE:", WEBSITE)
     
-    return NAME, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE
+    return NAME, FIRST_NAME, LAST_NAME, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE

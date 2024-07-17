@@ -83,6 +83,14 @@
                     <input type="text" id="name" name="name" required>
                 </div>
                 <div class="form-group">
+                    <label for="first" class="required-field">First Name:</label>
+                    <input type="text" id="first" name="first">
+                </div>
+                <div class="form-group">
+                    <label for="last" class="required-field">Last Name:</label>
+                    <input type="text" id="last" name="last">
+                </div>
+                <div class="form-group">
                     <label for="company">Company:</label>
                     <input type="text" id="company" name="company">
                 </div>
@@ -187,6 +195,8 @@
                     if (result.success) {
                         // 填充表單字段
                         document.getElementById('name').value = result.data.name || '';
+                        document.getElementById('first').value = result.data.first || '';
+                        document.getElementById('last').value = result.data.last || '';
                         document.getElementById('company').value = result.data.company || '';
                         document.getElementById('department1').value = result.data.department1 || '';
                         document.getElementById('department2').value = result.data.department2 || '';

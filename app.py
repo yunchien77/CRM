@@ -78,7 +78,7 @@ def upload():
 
         if ocr_text:
             # Process business card using image2Class.py
-            NAME, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE = process_business_card(ocr_text)
+            NAME, FIRST, LAST, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE = process_business_card(ocr_text)
 
             # 檢查重複名字
             duplicate_records = searchName(NAME)
@@ -87,6 +87,8 @@ def upload():
                 'filename': filename,
                 'description': description,
                 'name': NAME,
+                'first': FIRST,
+                'last': LAST,
                 'company': COMPANY,
                 'department1': DEPART1,
                 'department2': DEPART2,
@@ -120,6 +122,8 @@ def upload():
 def confirm():
     try:
         NAME = request.form['name']
+        FIRST = request.form['first']
+        LAST = request.form['last']
         COMPANY = request.form['company']
         DEPART1 = request.form['department1']
         DEPART2 = request.form['department2']
@@ -143,7 +147,7 @@ def confirm():
 
         url = uploadFile(session['file_path'])
         session.pop('file_path', None)
-        createEntity(NAME, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE, DESCRIPTION, url)
+        createEntity(NAME, FIRST, LAST, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE, DESCRIPTION, url)
         remove_files('img/')
 
         return jsonify({'success': True}), 200
@@ -167,11 +171,11 @@ def process_and_upload_image(file, ocr_engine, ocr_language):
         ocr_text, file_path = ocr_image(file_path, ocr_engine, ocr_language)
 
         if ocr_text:
-            NAME, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE = process_business_card(ocr_text)
+            NAME, FIRST, LAST, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE = process_business_card(ocr_text)
             
             url = uploadFile(file_path)
             # 直接上傳到 Ragic
-            createEntity_unconfirmed(NAME, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE, url)
+            createEntity_unconfirmed(NAME, FIRST, LAST, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE, url)
             
             return {'success': True, 'filename': filename}
         else:
