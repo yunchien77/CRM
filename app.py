@@ -148,9 +148,6 @@ def confirm():
         WEBSITE = request.form['website']
         DESCRIPTION = request.form['description']
 
-        print(NAME)
-        print(COMPANY)
-
         date = datetime.now().strftime('%Y%m%d')
         new_filename = f"{NAME}-{COMPANY}-{date}-010-3{os.path.splitext(session['file_path'])[1]}"
         print(f"------------{new_filename}------------")
@@ -186,7 +183,13 @@ def process_and_upload_image(file, ocr_engine, ocr_language):
         if ocr_text:
             NAME, FIRST, LAST, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE = process_business_card(ocr_text)
             
-            url = uploadFile(file_path)
+            date = datetime.now().strftime('%Y%m%d')
+            new_filename = f"{NAME}-{COMPANY}-{date}-010-3{os.path.splitext(file_path)[1]}"
+            print(f"------------{new_filename}------------")
+            nfile_path = os.path.join(os.path.dirname(file_path), new_filename)
+            os.rename(file_path, nfile_path)
+
+            url = uploadFile(nfile_path)
             # 直接上傳到 Ragic
             createEntity_unconfirmed(NAME, FIRST, LAST, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE, url)
             
