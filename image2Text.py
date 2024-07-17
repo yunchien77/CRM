@@ -40,10 +40,10 @@ def resize_image(img_path, max_size_kb=1024):
 
         # Resize image using Lanczos resampling (recommended alternative to ANTIALIAS)
         resized_image = pil_image.resize((new_width, new_height), Image.LANCZOS)
-        resized_path = os.path.splitext(img_path)[0] + "_resized.jpg"
-        resized_image.save(resized_path, quality=95)  # Save resized image
-        print(f"Image resized to fit within {max_size_kb} KB and saved as {resized_path}")
-        return resized_path
+        #resized_path = os.path.splitext(img_path)[0] + "_resized.jpg"
+        resized_image.save(img_path, quality=95)  # Save resized image
+        print(f"Image resized to fit within {max_size_kb} KB and saved as {img_path}")
+        return img_path
 
     except Exception as e:
         print(f"Error resizing image: {e}")

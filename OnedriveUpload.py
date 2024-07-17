@@ -75,6 +75,7 @@ def upload_file_to_onedrive(access_token, file_path, file_name, folder_path):
         return 
 
 def uploadFile(file_path):
+    print(file_path)
     # 設置您的 Azure 應用程序憑證
     client_id = os.getenv('CILENT_ID')
     tenant_id = os.getenv('TENANT_ID')
@@ -101,6 +102,7 @@ def uploadFile(file_path):
         return
     else:
         file_name = os.path.basename(file_path)
+        print(file_name)
         folder_path = "BusinessCards"
             
         url = upload_file_to_onedrive(access_token, file_path, file_name, folder_path)

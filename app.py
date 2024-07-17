@@ -20,6 +20,7 @@ from pypinyin import lazy_pinyin
 
 from concurrent.futures import ThreadPoolExecutor
 import uuid
+from datetime import datetime
 import os
 
 app = Flask(__name__)
@@ -74,7 +75,6 @@ def upload():
 
         # Call OCR function from image2Text.py
         ocr_text, file_path = ocr_image(file_path, ocr_engine, ocr_language)
-        session['file_path'] = file_path
 
         if ocr_text:
             # Process business card using image2Class.py
@@ -108,6 +108,8 @@ def upload():
                 'website': WEBSITE,
                 'duplicate': duplicate_records if duplicate_records else None
             }
+
+            session['file_path'] = file_path
 
             return jsonify({'success': True, 'data': data}), 200
 
@@ -146,7 +148,17 @@ def confirm():
         WEBSITE = request.form['website']
         DESCRIPTION = request.form['description']
 
-        url = uploadFile(session['file_path'])
+        print(NAME)
+        print(COMPANY)
+
+        date = datetime.now().strftime('%Y%m%d')
+        new_filename = f"{NAME}-{COMPANY}-{date}-010-3{os.path.splitext(session['file_path'])[1]}"
+        print(f"------------{new_filename}------------")
+        nfile_path = os.path.join(os.path.dirname(session['file_path']), new_filename)
+        os.rename(session['file_path'], nfile_path)
+
+        url = uploadFile(nfile_path)
+        print(url)
         session.pop('file_path', None)
         createEntity(NAME, FIRST, LAST, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, ETITLE, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE, DESCRIPTION, url)
         remove_files('img/')
