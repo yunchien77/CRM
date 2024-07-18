@@ -52,5 +52,5 @@ def get_recipient_info(target_tag):
     return customers
 
 # Example usage
-customers = get_recipient_info('朋友')
-print(customers)
+#customers = get_recipient_info('朋友')
+#print(customers)

@@ -107,4 +107,3 @@ def uploadFile(file_path):
             
         url = upload_file_to_onedrive(access_token, file_path, file_name, folder_path)
         return url
-
