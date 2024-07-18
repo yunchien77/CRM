@@ -298,7 +298,7 @@ def send_emails_to_customers(customers, subject, content, attachment_paths):
 
         for customer in customers:
             receiver_email = customer['email']
-            receiver_name = customer['name']
+            receiver_name = customer['emailtitle']
             print(f'Sending email to {receiver_name} : {receiver_email}')
 
             message = MIMEMultipart("alternative")

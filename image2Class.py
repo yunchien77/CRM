@@ -33,7 +33,9 @@ Guidelines:
 5. If the provided information contains multiple "different" instances of email addresses, phone numbers, or addresses, ensure they are separated and classified accordingly in the output JSON. For example, if the string is "example@gmail.com 886979666666", they will be classified into emails and mobile phone numbers.
 
 Specific instructions for key categories:
-1. Person Name: Split the name into first name and last name
+1. Person Name: Split the name into first name and last name.
+   - For English names, the first name comes first, followed by the last name.
+   - For Chinese names, the last name (family name) comes first, followed by the first name (given name).
 
 2. Company Name: 
    - The name of the organization or business.
