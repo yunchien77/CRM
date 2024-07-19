@@ -51,6 +51,8 @@ def upload():
         return jsonify({'error': 'No file part in the request'}), 400
 
     file = request.files['file']
+    afiles = request.files.getlist('afiles')
+
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
 
@@ -64,16 +66,23 @@ def upload():
         file.save(file_path)
         print("File saved:", file_path)
 
+        file_path_list = []
+        for afile in afiles:
+            if afile.filename != '':
+                afilename = f"{uuid.uuid4()}_{secure_filename(afile.filename)}"
+                af_path = os.path.join(app.config['UPLOAD_FOLDER'], afilename)
+                afile.save(af_path)
+                print("File saved:", af_path)
+                file_path_list.append(af_path)
+
         description = request.form.get('description', '')
         print("Description:", description)
 
         # Determine OCR engine based on selected language
         ocr_language = request.form.get('ocrLanguage', 'cht')
-        if ocr_language in ['chs', 'cht', 'eng']:
-            ocr_engine = 2
-        else:
-            ocr_engine = 1
+        ocr_engine = 2 if ocr_language in ['chs', 'cht', 'eng'] else 1
 
+        
         # Call OCR function from image2Text.py
         ocr_text, file_path = ocr_image(file_path, ocr_engine, ocr_language)
 
@@ -111,14 +120,17 @@ def upload():
             }
 
             session['file_path'] = file_path
+            if file_path_list:
+                session['file_path_list'] = file_path_list
 
             return jsonify({'success': True, 'data': data}), 200
 
         else:
             return jsonify({'error': 'OCR failed to recognize text from the image'}), 500
-
+        
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+    
 
 # Route for confirming the data and calling createEntity function
 @app.route('/confirm', methods=['POST'])
@@ -151,13 +163,26 @@ def confirm():
 
         date = datetime.now().strftime('%Y%m%d')
         new_filename = f"{NAME}-{COMPANY}-{date}-010-3{os.path.splitext(session['file_path'])[1]}"
-        print(f"------------{new_filename}------------")
+        #print(f"------------{new_filename}------------")
         nfile_path = os.path.join(os.path.dirname(session['file_path']), new_filename)
         os.rename(session['file_path'], nfile_path)
 
         url = uploadFile(nfile_path)
-        print(url)
+
+        ####################
+        if 'file_path_list' in session:
+            urls = []
+            for count, value in enumerate(session['file_path_list']):
+                new_filename = f"{NAME}-{COMPANY}-{date}-{count+1}-010-3{os.path.splitext(value)[1]}"
+                nfile_path = os.path.join(os.path.dirname(value), new_filename)
+                os.rename(value, nfile_path)
+                urls.append(uploadFile(nfile_path))
+
+            for i in urls:
+                url += ("\n" + i)
+        #########################
         session.pop('file_path', None)
+        session.pop('file_path_list', None)
         createEntity(NAME, FIRST, LAST, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, ETITLE, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE, DESCRIPTION, url)
         remove_files('img/')
 
@@ -213,10 +238,7 @@ def upload_multi_file():
         os.makedirs(app.config['UPLOAD_FOLDER'])
 
     ocr_language = request.form.get('ocrLanguage', 'cht')
-    if ocr_language in ['chs', 'cht', 'eng']:
-        ocr_engine = 2
-    else:
-        ocr_engine = 1
+    ocr_engine = 2 if ocr_language in ['chs', 'cht', 'eng'] else 1
 
     results = []
     with ThreadPoolExecutor(max_workers=5) as executor:

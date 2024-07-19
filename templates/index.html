@@ -61,9 +61,13 @@
             </div><br>
             <div class="form-group">
                 <label for="description">Description:</label>
-                <textarea id="description" name="description" rows="4"
-                    placeholder="Enter description"></textarea><br><br>
+                <textarea id="description" name="description" rows="4" placeholder="Enter description"></textarea><br>
             </div>
+            <div>
+                <label for="afiles">Another Images:</label>
+                <input type="file" id="afiles" name="afiles" multiple>
+            </div><br>
+
             <input type="button" value="Upload" class="button" onclick="uploadFile()">
         </div>
 
@@ -184,10 +188,18 @@
                 loadingIndicator.style.display = 'block';  // 顯示加載指示器
 
                 const fileInput = document.getElementById('file');
+                const afilesInput = document.getElementById('afiles');
                 const descriptionInput = document.getElementById('description');
+                const ocrLanguageSelect = document.getElementById('ocrLanguage');
                 const formData = new FormData();
+
                 formData.append('file', fileInput.files[0]);
                 formData.append('description', descriptionInput.value);
+                formData.append('ocrLanguage', ocrLanguageSelect.value);
+
+                for (let i = 0; i < afilesInput.files.length; i++) {
+                    formData.append('afiles', afilesInput.files[i]);
+                }
 
                 try {
                     const response = await fetch('/upload', {

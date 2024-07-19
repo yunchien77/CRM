@@ -1,6 +1,5 @@
 import requests
 from PIL import Image
-#import numpy as np
 from pillow_heif import register_heif_opener
 from dotenv import load_dotenv
 import os
@@ -86,10 +85,8 @@ def ocr_image(img_path, ocr_engine, ocr_language):
             #"isOverlayRequired": True   # provide location info
         }
 
-        # POST to OCR.space API
         result = requests.post(api_url, files=files, data=data)
 
-        # Get the OCR result as JSON
         result_json = result.json()
         print(result_json)
 
