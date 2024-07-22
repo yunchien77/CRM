@@ -28,8 +28,7 @@ Your task is to classify each piece of information into appropriate categories a
 Guidelines:
 1. Each category in the JSON should be unique.
 2. If a category has multiple values, separate them with a slash (/).
-3. Do not create duplicate categories.
-4. If information doesn't fit into the predefined categories, you may ignore it.
+3. If information doesn't fit into the predefined categories, you may ignore it.
 5. If the provided information contains multiple "different" instances of email addresses, phone numbers, or addresses, ensure they are separated and classified accordingly in the output JSON. For example, if the string is "example@gmail.com 886979666666", they will be classified into emails and mobile phone numbers.
 
 Specific instructions for key categories:
@@ -37,41 +36,17 @@ Specific instructions for key categories:
    - For English names, the first name comes first, followed by the last name.
    - For Chinese names, the last name (family name) comes first, followed by the first name (given name).
 
-2. Company Name: 
-   - The name of the organization or business.
-   - This could be a company, hospital, clinic, medical center, or other healthcare institution.
-   - Examples: "ABC Corporation", "St. Mary's Hospital", "City General Medical Center"
+2. Company Name: The name of the organization or business.
 
-3. Department: 
-   - Common departments include: Research & Development, Marketing, Human Resources, Finance, Operations, Sales, Customer Service.
-   - In healthcare settings, this might include: Cardiology, Neurology, Oncology, Pediatrics, Emergency Medicine, Radiology, Ophthalmology, etc.
-   - Department names often end with words like "Department", "Division", "Team", "Unit", or "Ward".
-   - Be cautious not to confuse departments with job titles.
+3. Department
 
-4. Job Title:
-   - This describes the person's role or position within the company.
-   - Common examples: CEO, CFO, Director of Marketing, Senior Software Engineer, Project Manager, Sales Representative.
-   - Medical examples: Chief of Surgery, Head Nurse, Radiologist, Attending Physician, Resident Doctor.
-   - Job titles often include level indicators like "Senior", "Junior", "Assistant", "Associate".
-   - Some job titles may include department information (e.g., "Marketing Manager", "Head of Pediatrics").
+4. Job Title: The person's role or position within the company.
 
+5. Contact Information: Carefully distinguish between Mobile Phone, Telephone (office), and Fax numbers.
 
-5. Contact Information:
-   - Carefully distinguish between Mobile Phone, Telephone (office), and Fax numbers.
-   - There may be multiple phone numbers or email addresses.
+6. Address
 
-6. Address:
-   - This could be a full street address, city, or multiple locations.
-
-7. Website:
-   - Usually starts with "www." or contains domain extensions like ".com", ".org", etc.
-
-When categorizing, consider the following:
-- Context is crucial. The same term might be a job title in one context and a department in another.
-- In medical settings, job titles, departments, and specialties can often overlap. Use your best judgment based on the overall context of the card.
-- Be aware of common abbreviations: "Dir." (Director), "VP" (Vice President), "R&D" (Research and Development), "HR" (Human Resources).
-
-If you're unsure about a classification, use your best judgment based on the context and common business card layouts.
+7. Website
 
 Output the classified information in the following JSON format:
 {
@@ -126,9 +101,6 @@ Output the classified information in the following JSON format:
         }
     ]
 }
-
-Remember, accuracy in classification is crucial, especially for Person Name, Company Name, Department, and Job Title.
-Please make sure the output format is consistent with the JSON format.
 """
  
 

@@ -97,3 +97,14 @@ def ocr_image(img_path, ocr_engine, ocr_language):
     else:
         print("Error: Unsupported or unknown image file format.")
         return None
+
+def imageProcess(img_path):
+    # Convert HEIF to JPEG if needed
+    if os.path.splitext(img_path)[1].lower() in ['.heif', '.heic']:
+        jpg_path = os.path.splitext(img_path)[0] + ".jpg"
+        if not convert_to_jpg(img_path, jpg_path):
+            return None
+        img_path = jpg_path
+
+    img_path = resize_image(img_path)
+    return img_path

@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from werkzeug.utils import secure_filename
-from image2Text import ocr_image
+from image2Text import ocr_image, imageProcess
 from image2Class import process_business_card
 from createData import createEntity
 from createData_unconfirmed import createEntity_unconfirmed
@@ -73,6 +73,7 @@ def upload():
                 af_path = os.path.join(app.config['UPLOAD_FOLDER'], afilename)
                 afile.save(af_path)
                 print("File saved:", af_path)
+                af_path = imageProcess(af_path)
                 file_path_list.append(af_path)
 
         description = request.form.get('description', '')
@@ -179,7 +180,7 @@ def confirm():
                 urls.append(uploadFile(nfile_path))
 
             for i in urls:
-                url += ("\n" + i)
+                url += ("\n\n" + i)
         #########################
         session.pop('file_path', None)
         session.pop('file_path_list', None)
