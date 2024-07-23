@@ -34,7 +34,7 @@ def sign_in(driver):
     final_sign_in = driver.find_element(By.XPATH, '//*[@id="organic-div"]/form/div[3]/button')
     final_sign_in.click()
     
-    driver.implicitly_wait(10)
+    driver.implicitly_wait(15)
 
 def perform_person_search(driver):
     # 搜尋框
@@ -51,8 +51,13 @@ def perform_person_search(driver):
 
 def scrape_people(driver):
     try:
-        no_matching_people = driver.find_element(By.XPATH, '//h1[text()="No results found"]')
-        print('\nNo matching people found.')
+        #no_matching_people = driver.find_element(By.XPATH, "/html/body/div[6]/div[3]/div[2]/div/div[1]/main/div/div/div/section/h2")
+        #print(no_matching_people.text)
+        #print('\nNo matching people found.')
+
+        no_matching = driver.find_element(By.XPATH, "//h2[text()='No results found']")
+        print(no_matching.text)
+        
     except NoSuchElementException:
         print('\n---> Person search begins....\n')
         
