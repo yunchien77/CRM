@@ -22,6 +22,7 @@ from pypinyin import lazy_pinyin
 from concurrent.futures import ThreadPoolExecutor
 import uuid
 from datetime import datetime
+import subprocess
 import os
 
 app = Flask(__name__)
@@ -43,6 +44,20 @@ def remove_files(folder_path):
 @app.route('/')
 def home():
     return render_template('index.html')
+
+@app.route('/run-linkedin-search', methods=['POST'])
+def run_linkedin_search():
+    data = request.json
+    username = data.get('username')
+    password = data.get('password')
+
+    try:
+        # Run the LinkedIn script with the provided credentials
+        result = subprocess.run(['python', 'linkedin.py', username, password], 
+                                capture_output=True, text=True, check=True)
+        return jsonify({"message": "LinkedIn search completed successfully."})
+    except subprocess.CalledProcessError as e:
+        return jsonify({"message": f"An error occurred: {e.stderr}"})
 
 # Route for handling image upload and invoking image2Class.py
 @app.route('/upload', methods=['POST'])

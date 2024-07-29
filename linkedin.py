@@ -22,14 +22,16 @@ def init_driver():
 def navigate_to_linkedin(driver):
     driver.get("https://www.linkedin.com/feed/")
     time.sleep(1)
-    
+
 def sign_in(driver):
     uname = driver.find_element(By.ID, "username")
-    username = getpass.getpass("Enter your LinkedIn username: ")
+    username = sys.argv[1]  # Get username from command-line argument
+    # username = getpass.getpass("Enter your LinkedIn username: ")
     uname.send_keys(username)
     
     pword = driver.find_element(By.ID, "password")
-    p = getpass.getpass("Enter your LinkedIn password: ")
+    p = sys.argv[2]  # Get password from command-line argument
+    # p = getpass.getpass("Enter your LinkedIn password: ")
     pword.send_keys(p)
     
     final_sign_in = driver.find_element(By.XPATH, '//*[@id="organic-div"]/form/div[3]/button')
