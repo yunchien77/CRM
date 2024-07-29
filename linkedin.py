@@ -125,8 +125,8 @@ def search():
             perform_person(driver, person['search'])
         name, link = scrape_people(driver)
         
-        if name != 'None' and link != 'None':
-            updateData(person['id'], name + ' ' + link) #updata data to Ragic
+        if name != 'None' and link != 'None' and name != 'Error':
+            updateData(person['id'], name + ' - ' + link) #updata data to Ragic
 
         count += 1
         #time.sleep(1)

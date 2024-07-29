@@ -40,6 +40,23 @@ def getAllPeople():
                 })
     return people_list
 
+def getAllPeopleSeperate():
+    response = requests.get(API_ENDPOINT_LISTING_PAGE, params=params, headers={'Authorization': 'Basic '+API_KEY})
+    #print(response.text)
+
+    data = response.json()
+
+    if data:
+        people_list = []
+        for key, value in data.items():
+            if value['相關連結'] == '':
+                people_list.append({
+                    "id": key,
+                    "name": value['Name'],
+                    "company": value['Company']
+                })
+    return people_list
+
 def updateData(RECORD_ID, result):
     print(RECORD_ID, result)
     API_ENDPOINT_FORM_PAGE = f'https://{SERVER_URL}/{ACCOUNT_NAME}/{TAB}/{SHEET_INDEX}/{RECORD_ID}'
