@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRM</title>
+    <script src="{{ url_for('static', filename='menu.js') }}" defer></script>
     <link rel="stylesheet" href="../static/menu.css">
     <link rel="stylesheet" href="../static/content.css">
     <style>
@@ -33,21 +34,7 @@
 
 <body>
     <a class="toggle-nav" href="#" onclick="toggleMenu(event)">&#9776;</a>
-
-    <nav class="menu">
-        <ul>
-            <li><a href="/">Single (Confirmed)</a></li>
-            <li class="current-item"><a href="/multiupload">Multiple (Unconfirmed)</a></li>
-            <li><a href="https://www.ragic.com/" target="_blank">Ragic</a></li>
-            <li><a href="/login">Send Email</a></li>
-            <li><a href="https://chingshow.github.io/blogs/" target="_blank">Blog</a></li>
-            <li><a href="https://www.cancerfree.io/zh-tw/index" target="_blank">CancerFree</a></li>
-            <li><a href="https://www.facebook.com/CancerFreeBiotech/" target="_blank">Facebook</a></li>
-            <li><a href="https://www.linkedin.com/company/cancerfree-biotech/?originalSubdomain=tw"
-                    target="_blank">Linkedin</a></li>
-            <li><a href="https://www.youtube.com/channel/UCqvEm2rawS8cMXA1PVIn2Bg" target="_blank">Youtube</a></li>
-        </ul>
-    </nav>
+    {% include 'menu.html' %}
 
     <div class="header">
         <div class="logo">
@@ -82,12 +69,6 @@
         <div class="version">v.3</div>
 
         <script>
-            function toggleMenu(event) {
-                event.preventDefault();
-                document.querySelector('.menu').classList.toggle('active');
-                document.querySelector('.toggle-nav').classList.toggle('active');
-            }
-
             async function uploadFiles() {
                 const loadingIndicator = document.getElementById('loading');
                 loadingIndicator.style.display = 'block';

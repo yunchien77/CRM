@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRM</title>
+    <script src="{{ url_for('static', filename='menu.js') }}" defer></script>
     <link rel="stylesheet" href="../static/menu.css">
     <link rel="stylesheet" href="../static/content.css">
     <style>
@@ -20,39 +21,7 @@
 
 <body>
     <a class="toggle-nav" href="#" onclick="toggleMenu(event)">&#9776;</a>
-
-    <nav class="menu">
-        <ul>
-            <li class="current-item"><a href="#">Single (Confirmed)</a></li>
-            <li><a href="/multiupload">Multiple (Unconfirmed)</a></li>
-            <li><a href="https://www.ragic.com/" target="_blank">Ragic</a></li>
-            <li><a href="/login">Send Email</a></li>
-            <li>
-                <a href="#linkedin-search" onclick="showLinkedInForm()">LinkedIn Search</a>
-                <div id="linkedin-form" style="display: none;">
-                    <form id="linkedin-credentials-form">
-                        <input type="text" id="linkedin-username" placeholder="LinkedIn Username" required>
-                        <input type="password" id="linkedin-password" placeholder="LinkedIn Password" required>
-                        <button type="submit">Submit</button>
-                    </form>
-                </div>
-                <div id="linkedin-form" style="display: none;">
-                    <h3>LinkedIn Search</h3>
-                    <form id="linkedin-credentials-form">
-                        <input type="text" id="linkedin-username" placeholder="LinkedIn Username" required>
-                        <input type="password" id="linkedin-password" placeholder="LinkedIn Password" required>
-                        <button type="submit">Submit</button>
-                    </form>
-                </div>
-            </li>
-            <li><a href="https://chingshow.github.io/blogs/" target="_blank">Blog</a></li>
-            <li><a href="https://www.cancerfree.io/zh-tw/index" target="_blank">CancerFree</a></li>
-            <li><a href="https://www.facebook.com/CancerFreeBiotech/" target="_blank">Facebook</a></li>
-            <li><a href="https://www.linkedin.com/company/cancerfree-biotech/?originalSubdomain=tw"
-                    target="_blank">Linkedin</a></li>
-            <li><a href="https://www.youtube.com/channel/UCqvEm2rawS8cMXA1PVIn2Bg" target="_blank">Youtube</a></li>
-        </ul>
-    </nav>
+    {% include 'menu.html' %}
 
     <div class="header">
         <div class="logo">
@@ -195,40 +164,6 @@
         <div class="version">v.3</div>
 
         <script>
-            function toggleMenu(event) {
-                event.preventDefault();
-                document.querySelector('.menu').classList.toggle('active');
-                document.querySelector('.toggle-nav').classList.toggle('active');
-            }
-
-            function showLinkedInForm() {
-                document.getElementById('linkedin-form').style.display = 'block';
-            }
-
-            document.getElementById('linkedin-credentials-form').addEventListener('submit', function (e) {
-                e.preventDefault();
-                var username = document.getElementById('linkedin-username').value;
-                var password = document.getElementById('linkedin-password').value;
-
-                // Send credentials to the server
-                fetch('/run-linkedin-search', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ username: username, password: password }),
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        alert(data.message);
-                        document.getElementById('linkedin-form').style.display = 'none';
-                    })
-                    .catch((error) => {
-                        console.error('Error:', error);
-                        alert('An error occurred while processing your request.');
-                    });
-            });
-
             async function uploadFile() {
                 const loadingIndicator = document.getElementById('loading');
                 loadingIndicator.style.display = 'block';  // 顯示加載指示器

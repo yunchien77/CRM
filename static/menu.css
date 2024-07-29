@@ -34,9 +34,11 @@
     color: #66a992;
 }
 
+/*
 .menu ul li.current-item a {
     color: #66a992;
 }
+*/
 
 .toggle-nav {
     position: fixed;
