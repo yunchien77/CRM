@@ -53,7 +53,10 @@
 
                 <label class="required-field">Enter email content:</label>
                 <small>使用 {name} 標籤可添加對應姓名</small>
-                <textarea name="email_content" rows="10" cols="40" required></textarea><br>
+
+                <button type="button" onclick="addHyperlink()">插入超連結</button><br>
+
+                <textarea id="emailContent" name="email_content" rows="10" cols="40" required></textarea><br>
 
                 <label>Attach a file:</label>
                 <input type="file" name="attachments" multiple><br>
@@ -78,6 +81,11 @@
         document.getElementById('logoutForm').addEventListener('submit', function (event) {
             alert('Logout ><')
         });
+
+        function addHyperlink() {
+            const emailContent = document.getElementById('emailContent');
+            emailContent.value += '<a href="網址">顯示名稱</a>';
+        }
     </script>
 </body>
 
