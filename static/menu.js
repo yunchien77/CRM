@@ -4,8 +4,17 @@ function toggleMenu(event) {
     document.querySelector('.toggle-nav').classList.toggle('active');
 }
 
-function showLinkedInForm() {
+function showLinkedinForm() {
     var form = document.getElementById('linkedin-form');
+    if (form.style.display === 'none' || form.style.display === '') {
+        form.style.display = 'block';
+    } else {
+        form.style.display = 'none';
+    }
+}
+
+function showGoogleForm() {
+    var form = document.getElementById('google-form');
     if (form.style.display === 'none' || form.style.display === '') {
         form.style.display = 'block';
     } else {
@@ -15,6 +24,8 @@ function showLinkedInForm() {
 
 document.getElementById('linkedin-credentials-form').addEventListener('submit', function (e) {
     e.preventDefault();
+    document.getElementById('linkedin-search-status').textContent = 'Searching...';
+
     var username = document.getElementById('linkedin-username').value;
     var password = document.getElementById('linkedin-password').value;
 
@@ -28,14 +39,35 @@ document.getElementById('linkedin-credentials-form').addEventListener('submit', 
     })
         .then(response => response.json())
         .then(data => {
-            alert(data.message);
-            document.getElementById('linkedin-form').style.display = 'none';
+            /*alert(data.message);*/
+            document.getElementById('linkedin-search-status').textContent = data.message;
+            /*document.getElementById('linkedin-form').style.display = 'none';*/
         })
         .catch((error) => {
             console.error('Error:', error);
-            alert('An error occurred while processing your request.');
+            /*alert('An error occurred while processing your request.');*/
+            document.getElementById('linkedin-search-status').textContent = 'An error occurred.';
         });
 });
 
+document.getElementById('google-search-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    // Show loading indicator
+    document.getElementById('google-search-status').textContent = 'Searching...';
+
+    // Send request to start Google search
+    fetch('/run-google-search', {
+        method: 'POST',
+    })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('google-search-status').textContent = data.message;
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            document.getElementById('google-search-status').textContent = 'An error occurred.';
+        });
+});
 
 

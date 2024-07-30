@@ -57,7 +57,17 @@ def run_linkedin_search():
                                 capture_output=True, text=True, check=True)
         return jsonify({"message": "LinkedIn search completed successfully."})
     except subprocess.CalledProcessError as e:
-        return jsonify({"message": f"An error occurred: {e.stderr}"})
+        return jsonify({"message": f"An error occurred."})
+
+@app.route('/run-google-search', methods=['POST'])
+def run_google_search():
+    try:
+        # Run the Google search script
+        result = subprocess.run(['python', 'googleSearch.py'], 
+                                capture_output=True, text=True, check=True)
+        return jsonify({"message": "Google search completed successfully."})
+    except subprocess.CalledProcessError as e:
+        return jsonify({"message": f"An error occurred."})
 
 # Route for handling image upload and invoking image2Class.py
 @app.route('/upload', methods=['POST'])

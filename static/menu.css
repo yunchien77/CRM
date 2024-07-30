@@ -83,6 +83,33 @@
     background-color: #528a76;
 }
 
+#google-form {
+    padding: 10px 20px;
+}
+
+#google-form button {
+    width: 100%;
+    padding: 5px;
+    background-color: #66a992;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#google-form button:hover {
+    background-color: #528a76;
+}
+
+#google-search-status {
+    color: rgb(195, 194, 194);
+    font-size: 13px;
+}
+
+#linkedin-search-status {
+    color: rgb(195, 194, 194);
+    font-size: 13px;
+}
+
 /* 為小屏幕設備調整 logo 位置 */
 @media (max-width: 600px) {
     .logo {
