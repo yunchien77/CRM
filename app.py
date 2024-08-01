@@ -354,6 +354,9 @@ def send_emails_to_customers(customers, subject, content, attachment_paths):
             message["From"] = email
             message["To"] = receiver_email
 
+            reply_to_email = "yunchien.yeh@gmail.com"
+            message.add_header('Reply-To', reply_to_email)
+
             ### 在郵件內文中添加{name}標籤會取代成郵件對應的名字
             html_content = content.replace('\n', '<br>').replace('{name}', receiver_name)
             message.attach(MIMEText(html_content, "html"))
@@ -391,6 +394,41 @@ def logout():
     session.pop('email', None)
     session.pop('password', None)
     return redirect(url_for('index'))
+
+@app.route('/excelupload')
+def excel_upload():
+    return render_template('excelupload.html')
+
+@app.route('/upload-excel', methods=['POST'])
+def upload_excel():
+    if 'excel_file' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+    file = request.files['excel_file']
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        
+        try:
+            result = subprocess.run(['python', 'excelUpload.py', file_path], 
+                                    capture_output=True, text=True, check=True)
+            
+            if result.returncode == 0:
+                return jsonify({"message": "Excel file processed successfully", "success": True}), 200
+            else:
+                return jsonify({"error": "Error processing Excel file: " + result.stdout, "success": False}), 500
+        except subprocess.CalledProcessError as e:
+            return jsonify({"error": f"Error processing Excel file: {e.output}", "success": False}), 500
+        finally:
+            os.remove(file_path)
+    else:
+        return jsonify({"error": "File type not allowed", "success": False}), 400
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'xlsx', 'xls'}
+
 
 if __name__ == '__main__':
     app.run(debug=True)

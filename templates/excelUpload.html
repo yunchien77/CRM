@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM</title>
+    <script src="{{ url_for('static', filename='menu.js') }}" defer></script>
+    <link rel="stylesheet" href="../static/menu.css">
+    <link rel="stylesheet" href="../static/content.css">
+    <style>
+        .version {
+            position: fixed;
+            left: 10px;
+            bottom: 10px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        #loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+
+<body>
+    <a class="toggle-nav" href="#" onclick="toggleMenu(event)">&#9776;</a>
+    {% include 'menu.html' %}
+
+    <div class="header">
+        <div class="logo">
+            <img src="static/logo.svg" alt="CancerFree Biotech">
+        </div>
+    </div>
+
+    <div class="content">
+        <h2>Upload Excel File for CRM System</h2>
+
+        <div id="upload-section">
+            <div class="form-group">
+                <label for="excel-file">Select Excel File:</label>
+                <input type="file" id="excel-file" name="excel_file" accept=".xlsx, .xls">
+            </div>
+            <input id="upload-button" type="button" value="Upload" class="button" onclick="uploadExcel()">
+        </div>
+
+        <div id="loading" style="display: none;">
+            uploading...
+        </div>
+
+        <!--<div id="upload-status"></div>-->
+
+        <div class="version">
+            v.3
+        </div>
+    </div>
+
+    <script>
+        function uploadExcel() {
+            var fileInput = document.getElementById('excel-file');
+            var file = fileInput.files[0];
+            var formData = new FormData();
+            formData.append('excel_file', file);
+
+            document.getElementById('loading').style.display = 'block';
+            /*document.getElementById('upload-status').innerHTML = '';*/
+
+            fetch('/upload-excel', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('loading').style.display = 'none';
+                    if (data.error) {
+                        /*document.getElementById('upload-status').innerHTML = 'Error: ' + data.error;*/
+                        alert('Error: ' + data.message);
+                    } else {
+                        /*document.getElementById('upload-status').innerHTML = data.message;*/
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('loading').style.display = 'none';
+                    console.error('Error:', error);
+                    document.getElementById('upload-status').innerHTML = 'An error occurred while uploading the file.';
+                });
+        }
+
+        function toggleMenu(event) {
+            event.preventDefault();
+            var menu = document.querySelector('.menu');
+            menu.classList.toggle('show');
+        }
+    </script>
+</body>
+
+</html>
