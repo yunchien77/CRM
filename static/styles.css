@@ -85,6 +85,10 @@ small {
     margin-bottom: 8px;
 }
 
+.input-bg {
+    background-color: #4b938c1f;
+}
+
 input[type="text"],
 input[type="password"],
 input[type="submit"] {
@@ -93,6 +97,7 @@ input[type="submit"] {
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
+    width: 100%;
 }
 
 input[type="submit"] {

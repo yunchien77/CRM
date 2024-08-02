@@ -40,16 +40,26 @@
             <h2>Send Emails</h2>
 
             <form method="POST" action="{{ url_for('send_email') }}" enctype="multipart/form-data" style="width: 100%;">
+                <div>
+                    <label for="from_email">From Email (optional):</label>
+                    <input type="text" id="from_email" name="from_email" class="input-bg">
+                </div>
+
+                <div>
+                    <label for="reply_to">Reply-To Email (optional):</label>
+                    <input type="text" id="reply_to" name="reply_to" class="input-bg">
+                </div>
+
                 <label class="required-field">Select recipient group:</label>
                 <select name="recipient_group" required>
                     <option value="" selected disabled hidden>請選擇</option>
                     {% for tag in taglist %}
                     <option value="{{ tag }}">{{ tag }}</option>
                     {% endfor %}
-                </select><br><br>
+                </select><br>
 
                 <label class="required-field">Enter email subject:</label>
-                <input type="text" name="email_subject" required><br>
+                <input type="text" name="email_subject" required>
 
                 <label class="required-field">Enter email content:</label>
                 <small>使用 {name} 標籤可添加對應姓名</small>

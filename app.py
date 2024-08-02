@@ -45,6 +45,9 @@ def remove_files(folder_path):
 def home():
     return render_template('index.html')
 
+###################################################
+###########           search             ##########
+###################################################
 @app.route('/run-linkedin-search', methods=['POST'])
 def run_linkedin_search():
     data = request.json
@@ -68,6 +71,10 @@ def run_google_search():
         return jsonify({"message": "Google search completed successfully."})
     except subprocess.CalledProcessError as e:
         return jsonify({"message": f"An error occurred."})
+
+###################################################
+###########   single upload (comfirmed)  ##########
+###################################################
 
 # Route for handling image upload and invoking image2Class.py
 @app.route('/upload', methods=['POST'])
@@ -195,7 +202,6 @@ def confirm():
 
         url = uploadFile(nfile_path)
 
-        ####################
         if 'file_path_list' in session:
             urls = []
             for count, value in enumerate(session['file_path_list']):
@@ -206,7 +212,7 @@ def confirm():
 
             for i in urls:
                 url += ("\n\n" + i)
-        #########################
+
         session.pop('file_path', None)
         session.pop('file_path_list', None)
         createEntity(NAME, FIRST, LAST, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, ETITLE, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE, DESCRIPTION, url)
@@ -216,6 +222,8 @@ def confirm():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
         
+###################################################
+########### multiple upload(uncomfirmed) ##########
 ###################################################
 
 @app.route('/multiupload')
@@ -278,6 +286,9 @@ def upload_multi_file():
     return jsonify({'results': results}), 200
 
 ##################################################
+############         email           #############
+##################################################
+
 @app.route('/login', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -313,6 +324,8 @@ def send_email():
         email_subject = request.form.get('email_subject')
         email_content = request.form.get('email_content')
         attachments = request.files.getlist('attachments')
+        from_email = request.form.get('from_email')
+        reply_to = request.form.get('reply_to')
 
         if recipient_group and email_subject and email_content:
             attachment_paths = []
@@ -325,7 +338,7 @@ def send_email():
 
             customers = get_recipient_info(recipient_group)
             if customers:
-                success = send_emails_to_customers(customers, email_subject, email_content, attachment_paths)
+                success = send_emails_to_customers(customers, email_subject, email_content, attachment_paths, from_email, reply_to)
                 if success:
                     date = datetime.now().strftime('%Y/%m/%d')
                     uploadHistory(customers, email_subject, email_content, date, session['email'])
@@ -335,14 +348,14 @@ def send_email():
 
     return render_template('send_email.html', taglist=taglist, email=session['email'])
 
-def send_emails_to_customers(customers, subject, content, attachment_paths):
-    email = session['email']
+def send_emails_to_customers(customers, subject, content, attachment_paths, from_email=None, reply_to=None):
+    email = from_email or session['email']
     password = session['password']
 
     try:
         server = smtplib.SMTP('smtp.outlook.com', 587)
         server.starttls()
-        server.login(email, password)
+        server.login(session['email'], password)  # 總是使用登錄的電子郵件進行身份驗證
 
         for customer in customers:
             receiver_email = customer['email']
@@ -354,14 +367,12 @@ def send_emails_to_customers(customers, subject, content, attachment_paths):
             message["From"] = email
             message["To"] = receiver_email
 
-            reply_to_email = "yunchien.yeh@gmail.com"
-            message.add_header('Reply-To', reply_to_email)
+            if reply_to:
+                message.add_header('Reply-To', reply_to)
 
-            ### 在郵件內文中添加{name}標籤會取代成郵件對應的名字
             html_content = content.replace('\n', '<br>').replace('{name}', receiver_name)
             message.attach(MIMEText(html_content, "html"))
 
-            # 如果有上傳附件
             for attachment_path in attachment_paths:
                 with open(attachment_path, "rb") as attachment_file:
                     part = MIMEBase("application", "octet-stream")
@@ -394,6 +405,10 @@ def logout():
     session.pop('email', None)
     session.pop('password', None)
     return redirect(url_for('index'))
+
+################################################
+##############   excel upload   ################
+################################################
 
 @app.route('/excelupload')
 def excel_upload():
