@@ -66,6 +66,7 @@ params = {
 }
 
 def createEntity(NAME, FIRSTNAME, FIRSTNAME_PINYIN, LASTNAME, LASTNAME_PINYIN, INDUSTRY, LOCATION, COMPANY1, DEPARTMENT1, TITLE1, COMPANY2, DEPARTMENT2, TITLE2, COMPANY_OTHER, DEPARTMENT_OTHER, TITLE3, MOBILE1, MOBILE2, MOBILE_OTHER, TEL1, TEL2, TEL_OTHER, FAX1, FAX2, FAX_OTHER, EMAIL1, EMAIL2, EMAIL_OTHER, ADDRESS1, ADDRESS2, ADDRESS_OTHER, WEBSITE, CHAT_ACCOUNT, SOCIAL_ACCOUNT, NICKNAME, BIRTHDAY, ANNIVERSARY, TYPE, DESCRIPTION1, DESCRIPTION2, DESCRIPTION3):
+    print("upload to Ragic...")
     data = {
         FIELD_NAME : NAME, #姓名
         FIELD_FIRSTNAME : FIRSTNAME, #名字
@@ -113,7 +114,7 @@ def createEntity(NAME, FIRSTNAME, FIRSTNAME_PINYIN, LASTNAME, LASTNAME_PINYIN, I
     response = requests.post(API_ENDPOINT_LISTING_PAGE, params=params, json=data, headers={'Authorization': 'Basic '+API_KEY})
     print(response.text)
 
-def main(file_path):
+def excel(file_path):
     print(f"Processing file: {file_path}")
 
     try:
@@ -181,17 +182,15 @@ def main(file_path):
 
             createEntity(NAME, FIRSTNAME, FIRSTNAME_PINYIN, LASTNAME, LASTNAME_PINYIN, INDUSTRY, LOCATION, COMPANY1, DEPARTMENT1, TITLE1, COMPANY2, DEPARTMENT2, TITLE2, COMPANY_OTHER, DEPARTMENT_OTHER, TITLE3, MOBILE1, MOBILE2, MOBILE_OTHER, TEL1, TEL2, TEL_OTHER, FAX1, FAX2, FAX_OTHER, EMAIL1, EMAIL2, EMAIL_OTHER, ADDRESS1, ADDRESS2, ADDRESS_OTHER, WEBSITE, CHAT_ACCOUNT, SOCIAL_ACCOUNT, NICKNAME, BIRTHDAY, ANNIVERSARY, TYPE, DESCRIPTION1, DESCRIPTION2, DESCRIPTION3)
         
-        print("Success: Excel file processed successfully")
-        return 0
-
-    except Exception as e:
-        print(f"Error processing Excel file: {str(e)}")
         return 1
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python excelUpload.py <path_to_excel_file>")
-        sys.exit(1)
+    except Exception as e:
+        return 0
+
+# if __name__ == "__main__":
+#     if len(sys.argv) != 2:
+#         print("Usage: python excelUpload.py <path_to_excel_file>")
+#         sys.exit(1)
     
-    file_path = sys.argv[1]
-    main(file_path)
+#     file_path = sys.argv[1]
+#     excel(file_path)

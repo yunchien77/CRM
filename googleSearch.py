@@ -50,6 +50,7 @@ def search():
             result = get_first_linkedin_result(driver, query)
             if result is None:
                 print('No result found')
+                updateData(person['id'], "not found")
             else:
                 print(f'Found: {result}')
                 updateData(person['id'], result)  # Update data to Ragic

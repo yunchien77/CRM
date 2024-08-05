@@ -15,7 +15,13 @@ import time
 import getpass
 
 def init_driver():
-    driver = webdriver.Chrome()
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+
+    driver = webdriver.Chrome(options=chrome_options)
+    #driver = webdriver.Chrome()
     driver.maximize_window()
     return driver
 
@@ -127,7 +133,8 @@ def search():
         
         if name != 'None' and link != 'None' and name != 'Error':
             updateData(person['id'], name + ' - ' + link) #updata data to Ragic
-
+        else:
+            updateData(person['id'], "not found")
         count += 1
         #time.sleep(1)
     

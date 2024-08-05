@@ -12,6 +12,7 @@ RUN apt-get update \
         libsm6 \
         libxext6 \
         libxrender-dev \
+        libheif-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the current directory contents into the container at /app
@@ -25,6 +26,7 @@ EXPOSE 5000
 
 # Define environment variable
 ENV FLASK_APP=app.py
+ENV FLASK_ENV=development
 
 # Run app.py when the container launches
 CMD ["gunicorn", "--bind", "0.0.0.0:5000", "wsgi:app"]
