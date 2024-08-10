@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 import sys
 import os
 
-
 SERVER_URL = 'ap12.ragic.com'
 ACCOUNT_NAME = 'cancerfree'
 TAB = 'forms5'
@@ -57,9 +56,6 @@ API_KEY = os.getenv('RAGIC_API_KEY')
 
 API_ENDPOINT_LISTING_PAGE = f'https://{SERVER_URL}/{ACCOUNT_NAME}/{TAB}/{SHEET_INDEX}'
 
-#
-# creating a new entry
-#
 params = {
     'api': '',
     'v': 3
@@ -119,12 +115,17 @@ def excel(file_path):
 
     try:
         # 讀取 Excel 文件
-        #file_path = 'excel/BD-名片電子化-Kobe-240717-3-010.xlsx'
         df = pd.read_excel(file_path, skiprows=1, engine='openpyxl')
+        
+        # 更好的空值處理
         df = df.fillna('')
         
         for index, row in df.iterrows():
-            #row = row.apply(lambda x: str(x) if isinstance(x, float) and (pd.isna(x) or x == float('inf') or x == float('-inf')) else x)
+            # 將所有值轉換為字符串,並處理特殊數值
+            row = row.apply(lambda x: '' if pd.isna(x) else 
+                            str(x) if not isinstance(x, float) else 
+                            str(int(x)) if x.is_integer() else str(x))
+            
             variables = row.tolist()  # Convert the row to a list
                 
             # Store values into specific variables (adjust according to your needs)
@@ -185,6 +186,7 @@ def excel(file_path):
         return 1
 
     except Exception as e:
+        print(f"An error occurred: {e}")
         return 0
 
 # if __name__ == "__main__":
@@ -193,4 +195,10 @@ def excel(file_path):
 #         sys.exit(1)
     
 #     file_path = sys.argv[1]
-#     excel(file_path)
+#     result = excel(file_path)
+#     if result:
+#         print("Upload completed successfully.")
+#     else:
+#         print("Upload failed.")
+
+excel('img/test.xlsx')
