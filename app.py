@@ -8,6 +8,8 @@ from OnedriveUpload import uploadFile
 from emailHistory import uploadHistory
 from excelUpload import excel
 import openai
+from googleSearch import search
+from googleCustom import customSearch
 
 import pandas as pd
 import requests
@@ -73,9 +75,18 @@ def run_linkedin_search():
 def run_google_search():
     try:
         # Run the Google search script
-        result = subprocess.run(['python', 'googleSearch.py'], 
-                                capture_output=True, text=True, check=True)
+        # result = subprocess.run(['python', 'googleSearch.py'], 
+        #                         capture_output=True, text=True, check=True)
+        search()
         return jsonify({"message": "Google search completed successfully."})
+    except subprocess.CalledProcessError as e:
+        return jsonify({"message": f"An error occurred."})
+
+@app.route('/run-custom-search', methods=['POST'])
+def run_custom_search():
+    try:
+        customSearch()
+        return jsonify({"message": "Google custom search completed successfully."})
     except subprocess.CalledProcessError as e:
         return jsonify({"message": f"An error occurred."})
 

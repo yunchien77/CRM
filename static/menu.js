@@ -22,6 +22,15 @@ function showGoogleForm() {
     }
 }
 
+function showCustomForm() {
+    var form = document.getElementById('google-custom-form');
+    if (form.style.display === 'none' || form.style.display === '') {
+        form.style.display = 'block';
+    } else {
+        form.style.display = 'none';
+    }
+}
+
 document.getElementById('linkedin-credentials-form').addEventListener('submit', function (e) {
     e.preventDefault();
     document.getElementById('linkedin-search-status').textContent = 'Searching...';
@@ -70,4 +79,22 @@ document.getElementById('google-search-form').addEventListener('submit', functio
         });
 });
 
+document.getElementById('google-custom-search-form').addEventListener('submit', function (e) {
+    e.preventDefault();
 
+    // Show loading indicator
+    document.getElementById('google-custom-search-status').textContent = 'Searching...';
+
+    // Send request to start Google search
+    fetch('/run-custom-search', {
+        method: 'POST',
+    })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('google-custom-search-status').textContent = data.message;
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            document.getElementById('google-custom-search-status').textContent = 'An error occurred.';
+        });
+});

@@ -201,4 +201,4 @@ def excel(file_path):
 #     else:
 #         print("Upload failed.")
 
-excel('img/test.xlsx')
+

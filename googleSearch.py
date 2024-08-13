@@ -4,6 +4,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.keys import Keys
 from getData import getAllPeopleSeperate, updateData
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 
 def get_first_linkedin_result(driver, query):
     driver.get('https://www.google.com/')
@@ -31,14 +32,24 @@ def get_first_linkedin_result(driver, query):
         driver.find_element(By.NAME, 'q').clear()
 
 def search():
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--disable-gpu")
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
+    # chrome_options = Options()
+    # chrome_options.add_argument("--headless")
+    # chrome_options.add_argument("--disable-gpu")
+    # chrome_options.add_argument("--no-sandbox")
+    # chrome_options.add_argument("--disable-dev-shm-usage")
     
-    #driver = webdriver.Chrome()
-    driver = webdriver.Chrome(options=chrome_options)
+    # #driver = webdriver.Chrome()
+    # driver = webdriver.Chrome(options=chrome_options)
+
+    # chrome_options = Options()
+    # chrome_options.add_argument("--headless")
+    # chrome_options.add_argument("--no-sandbox")
+    # chrome_options.add_argument("--disable-dev-shm-usage")
+    # chrome_options.add_argument("--disable-gpu")
+    # chrome_options.add_argument("--disable-extensions")
+
+    #driver = webdriver.Chrome(options=chrome_options)
+    driver = webdriver.Chrome()
     driver.implicitly_wait(10)
 
     try:

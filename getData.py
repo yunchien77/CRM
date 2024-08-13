@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-API_KEY = 'b0hPOFAzbkRaNzFJV1F4RzNkRTA1Sko3QS9BMVlrbzdUZWtzVi9FcGtzejVFTzlDMGxHMnMwVzVQaFpEcGdzT29JOENFVy9qNzZnPQ=='
+API_KEY = os.getenv('RAGIC_API_KEY')
 
 SERVER_URL = 'ap12.ragic.com'
 ACCOUNT_NAME = 'cancerfree'
@@ -38,6 +38,8 @@ def getAllPeople():
                     "id": key,
                     "search": search_str
                 })
+
+    print(people_list)
     return people_list
 
 def getAllPeopleSeperate():

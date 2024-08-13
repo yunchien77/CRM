@@ -10,8 +10,8 @@ pillow
 pillow_heif
 pypinyin
 python-dotenv
-webdriver_manager
-selenium
+webdriver_manager==4.0.1
+selenium==4.23.0
 requests
 Werkzeug
 msal
