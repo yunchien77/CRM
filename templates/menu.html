@@ -1,11 +1,11 @@
 <nav class="menu">
     <ul>
-        <li><a href="/">Single (Confirmed)</a></li>
-        <li><a href="/multiupload">Multiple (Unconfirmed)</a></li>
-        <li><a href="/excelupload">Excel Upload</a></li>
+        <li><a href="/">Single Card Identification</a></li>
+        <li><a href="/multiupload">Bulk Card Identification</a></li>
+        <li><a href="/excelupload">Excel Data Upload</a></li>
         <li><a href="https://www.ragic.com/" target="_blank">Ragic</a></li>
-        <li><a href="/login">Send Email</a></li>
-        <li>
+        <li><a href="/login">Outlook Group Email</a></li>
+        <!-- <li>
             <a href="#linkedin-search" onclick="showLinkedinForm()">Linkedin Search</a>
             <div id="linkedin-form" style="display: none;">
                 <form id="linkedin-credentials-form">
@@ -33,6 +33,40 @@
                 </form>
                 <div id="google-custom-search-status"></div>
             </div>
+        </li> -->
+        <li>
+            <a href="#social-search" onclick="toggleSocialSearch()">Social Search</a>
+            <ul id="social-search-menu" style="display: none;">
+                <li>
+                    <a href="#google-custom-search" onclick="showCustomForm()">- Google Custom Search</a>
+                    <div id="google-custom-form" style="display: none;">
+                        <form id="google-custom-search-form">
+                            <button type="submit">Start</button>
+                        </form>
+                        <div id="google-custom-search-status"></div>
+                    </div>
+                </li>
+                <li>
+                    <a href="#google-search" onclick="showGoogleForm()">- Google Search</a>
+                    <div id="google-form" style="display: none;">
+                        <form id="google-search-form">
+                            <button type="submit">Start</button>
+                        </form>
+                        <div id="google-search-status"></div>
+                    </div>
+                </li>
+                <li>
+                    <a href="#linkedin-search" onclick="showLinkedinForm()">- Linkedin Search</a>
+                    <div id="linkedin-form" style="display: none;">
+                        <form id="linkedin-credentials-form">
+                            <input type="text" id="linkedin-username" placeholder="LinkedIn Username" required>
+                            <input type="password" id="linkedin-password" placeholder="LinkedIn Password" required>
+                            <button type="submit">Submit</button>
+                        </form>
+                        <div id="linkedin-search-status"></div>
+                    </div>
+                </li>
+            </ul>
         </li>
         <!--
         <li><a href="https://chingshow.github.io/blogs/" target="_blank">Blog</a></li>

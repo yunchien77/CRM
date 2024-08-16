@@ -41,34 +41,34 @@
 
             <form method="POST" action="{{ url_for('send_email') }}" enctype="multipart/form-data" style="width: 100%;">
                 <div>
-                    <label for="from_email">From Email (optional):</label>
+                    <label for="from_email">From (optional):</label>
                     <input type="text" id="from_email" name="from_email" class="input-bg">
                 </div>
 
                 <div>
-                    <label for="reply_to">Reply-To Email (optional):</label>
+                    <label for="reply_to">Reply-To (optional):</label>
                     <input type="text" id="reply_to" name="reply_to" class="input-bg">
-                </div>
+                </div><br>
 
                 <label class="required-field">Select recipient group:</label>
                 <select name="recipient_group" required>
-                    <option value="" selected disabled hidden>請選擇</option>
+                    <option value="" selected disabled hidden>Please select</option>
                     {% for tag in taglist %}
                     <option value="{{ tag }}">{{ tag }}</option>
                     {% endfor %}
                 </select><br>
 
-                <label class="required-field">Enter email subject:</label>
-                <input type="text" name="email_subject" required>
+                <label class="required-field">Email subject:</label>
+                <input type="text" name="email_subject" required><br>
 
-                <label class="required-field">Enter email content:</label>
-                <small>使用 {name} 標籤可添加對應姓名</small>
+                <label class="required-field">Email body:</label>
+                <small>Use the {name} tag to add a corresponding name</small>
 
-                <button type="button" onclick="addHyperlink()">插入超連結</button><br>
+                <button type="button" onclick="addHyperlink()">Insert hyperlink</button><br>
 
                 <textarea id="emailContent" name="email_content" rows="10" cols="40" required></textarea><br>
 
-                <label>Attach a file:</label>
+                <label>Attach a file: (Less than 10M)</label>
                 <input type="file" name="attachments" multiple><br>
 
                 <input type="submit" value="Send">
@@ -76,7 +76,7 @@
         </div>
     </div>
 
-    <div class="version">v.3</div>
+    <div class="version">v.4</div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);

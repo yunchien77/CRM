@@ -39,7 +39,7 @@ def getAllPeople():
                     "search": search_str
                 })
 
-    print(people_list)
+    #print(people_list)
     return people_list
 
 def getAllPeopleSeperate():

@@ -4,6 +4,15 @@ function toggleMenu(event) {
     document.querySelector('.toggle-nav').classList.toggle('active');
 }
 
+function toggleSocialSearch() {
+    var menu = document.getElementById('social-search-menu');
+    if (menu.style.display === 'none' || menu.style.display === '') {
+        menu.style.display = 'block';
+    } else {
+        menu.style.display = 'none';
+    }
+}
+
 function showLinkedinForm() {
     var form = document.getElementById('linkedin-form');
     if (form.style.display === 'none' || form.style.display === '') {
