@@ -156,6 +156,21 @@ ul#social-search-menu li div form {
     font-size: 13px;
 }
 
+.bottom-image {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 10px;
+    /* Adjust padding if needed */
+}
+
+.bottom-left-icon svg {
+    width: 24px;
+    /* Adjust width */
+    height: 24px;
+    /* Adjust height */
+}
+
 /* 為小屏幕設備調整 logo 位置 */
 @media (max-width: 600px) {
     .logo {

@@ -29,7 +29,8 @@ params = {
 }
 
 def uploadHistory(customers, email_subject, email_content, date, username):
-    for customer in customers:
+    #for customer in customers:
+    for customer, content in zip(customers, email_content):
         id = customer['id']
         username = username.split('@')[0]
         name = customer['name']
@@ -40,7 +41,7 @@ def uploadHistory(customers, email_subject, email_content, date, username):
             FIELD_date: date,        
             FIELD_method: '郵件',     
             FIELD_person: username,       
-            FIELD_content: email_subject+'\n'+email_content,   
+            FIELD_content: email_subject+'\n'+content,   
             FIELD_name: name,
             FIELD_title: title    
         }

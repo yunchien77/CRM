@@ -21,7 +21,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email import encoders
 from werkzeug.utils import secure_filename
-from recipientList import get_recipient_info
+from recipientList import get_recipient_info, get_recipient_individual
 from getTagList import get_taglist
 from duplicatedName import searchName
 from pypinyin import lazy_pinyin
@@ -347,16 +347,32 @@ def send_email():
         os.makedirs(EMAIL_UPLOAD_FOLDER)
 
     taglist = get_taglist()
+    individual_list = get_recipient_individual()
 
     if request.method == 'POST':
-        recipient_group = request.form.get('recipient_group')
+        recipient_type = request.form.get('recipient_type')
+        print(f"Recipient type: {recipient_type}")
+
+        if recipient_type == 'group':
+            recipient_group = request.form.get('recipient_group')
+            customers = get_recipient_info(recipient_group)
+            print("group~~~~~\n", customers)
+        elif recipient_type == 'individual':
+            selected_id = request.form.get('selected_individual')
+            customers = [next(item for item in individual_list if item["id"] == selected_id)]
+            print("individuallllll~~~~~\n", customers)
+        else:
+            # Handle unexpected recipient_type
+            # flash('Invalid recipient type selected.', 'error')
+            return redirect(url_for('send_email'))
+
         email_subject = request.form.get('email_subject')
         email_content = request.form.get('email_content')
         attachments = request.files.getlist('attachments')
         from_email = request.form.get('from_email')
         reply_to = request.form.get('reply_to')
 
-        if recipient_group and email_subject and email_content:
+        if customers and email_subject and email_content:
             attachment_paths = []
             for attachment in attachments:
                 if attachment:
@@ -365,17 +381,21 @@ def send_email():
                     attachment.save(attachment_path)
                     attachment_paths.append(attachment_path)
 
-            customers = get_recipient_info(recipient_group)
-            if customers:
-                success = send_emails_to_customers(customers, email_subject, email_content, attachment_paths, from_email, reply_to)
-                if success:
-                    date = datetime.now().strftime('%Y/%m/%d')
-                    uploadHistory(customers, email_subject, email_content, date, session['email'])
-                    return redirect(url_for('send_email', status='sent'))
-                else:
-                    return redirect(url_for('send_email', status='error'))
+            success = send_emails_to_customers(customers, email_subject, email_content, attachment_paths, from_email, reply_to)
+            if success:
+                date = datetime.now().strftime('%Y/%m/%d')
+                personalized_content = [email_content.replace('{name}', customer['emailtitle']) for customer in customers]
+                uploadHistory(customers, email_subject, personalized_content, date, session['email'])
+                return redirect(url_for('send_email', status='sent'))
+            else:
+                return redirect(url_for('send_email', status='error'))
 
-    return render_template('send_email.html', taglist=taglist, email=session['email'])
+    return render_template('send_email.html', taglist=taglist, email=session['email'], individual_list=individual_list)
+
+@app.route('/get_individual_list', methods=['GET'])
+def get_individual_list():
+    individual_list = get_recipient_individual()
+    return jsonify(individual_list)
 
 def send_emails_to_customers(customers, subject, content, attachment_paths, from_email=None, reply_to=None):
     email = from_email or session['email']

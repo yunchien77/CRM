@@ -69,4 +69,4 @@ def updateData(RECORD_ID, result):
     requests.post(API_ENDPOINT_FORM_PAGE, params=params, json=data, headers={'Authorization': 'Basic '+API_KEY})
 
 
-getAllPeople()
+#getAllPeople()
