@@ -56,7 +56,7 @@ EXPOSE 5000
 
 # Define environment variables
 ENV FLASK_APP=app.py
-ENV FLASK_ENV=development
+ENV FLASK_ENV=production
 
-# Run app with Xvfb
-CMD xvfb-run --server-args="-screen 0 1024x768x24" gunicorn --bind 0.0.0.0:5000 wsgi:app
+# Run app with Gunicorn and Xvfb
+CMD xvfb-run --server-args="-screen 0 1024x768x24" gunicorn --bind 0.0.0.0:5000 --timeout 600 --workers 3 --threads 3 wsgi:app

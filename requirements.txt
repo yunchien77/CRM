@@ -2,7 +2,7 @@ Flask
 MarkupSafe
 multidict
 numpy
-openai==0.28.0
+openai
 opencv-python
 openpyxl
 pandas

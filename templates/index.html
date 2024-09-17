@@ -6,8 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRM</title>
     <script src="{{ url_for('static', filename='menu.js') }}" defer></script>
+    <script>
+        document.getElementById('logoutForm').addEventListener('submit', function (event) {
+            alert('Logout ><')
+        });
+    </script>
     <link rel="stylesheet" href="../static/menu.css">
     <link rel="stylesheet" href="../static/content.css">
+    <link rel="stylesheet" href="../static/styles.css">
     <style>
         .version {
             position: fixed;
@@ -27,6 +33,13 @@
         <div class="logo">
             <img src="static/logo.svg" alt="CancerFree Biotech">
         </div>
+    </div>
+
+    <div class="rightcolumn">
+        <p>{{ email }}</p>
+        <form id="logoutForm" action="{{ url_for('logout') }}" method="get">
+            <input type="submit" value="Logout">
+        </form>
     </div>
 
     <div class="content">
@@ -51,7 +64,7 @@
                 <textarea id="description" name="description" rows="4" placeholder="Enter description"></textarea><br>
             </div>
             <div>
-                <label for="afiles">Another Images:</label>
+                <label for="afiles">Other Images:</label>
                 <input type="file" id="afiles" name="afiles" multiple>
             </div><br>
 
@@ -161,9 +174,11 @@
             </form>
         </div>
 
-        <div class="version">v.4</div>
+        <div class="version">v.6</div>
 
         <script>
+            let ocrText = '';
+
             async function uploadFile() {
                 const loadingIndicator = document.getElementById('loading');
                 loadingIndicator.style.display = 'block';  // 顯示加載指示器
@@ -213,6 +228,8 @@
                         document.getElementById('website').value = result.data.website || '';
                         document.getElementById('confirm-description').value = result.data.description || '';
 
+                        ocrText = result.data.ocr_text;
+
                         // 顯示文件名
                         document.getElementById('filename-display').innerHTML = `<p><strong>Filename:</strong> ${result.data.filename}</p>`;
 
@@ -250,6 +267,8 @@
 
                 const form = document.getElementById('confirm-form');
                 const formData = new FormData(form);
+
+                formData.append('ocr_text', ocrText);
 
                 // 檢查 'name' 字段是否已填寫
                 const name = formData.get('name');

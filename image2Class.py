@@ -1,23 +1,21 @@
-import openai
-import json
-from dotenv import load_dotenv
 import os
-#from image2Text import ocr_image
+from openai import OpenAI
+from dotenv import load_dotenv
+import json
 
 load_dotenv()
 
-# OpenAI API key
-openai.api_key = os.getenv('OPENAI_API_KEY')
-
+# Initialize OpenAI client
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 def get_completion_from_messages(prompt, model="gpt-4o-mini", temperature=0, max_tokens=500):
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model=model,
         messages=prompt,
         temperature=temperature,
         max_tokens=max_tokens,
     )
-    return response.choices[0].message["content"]
+    return response.choices[0].message.content
 
 delimiter = "####"
 system_message = """
@@ -27,8 +25,9 @@ Your task is to classify each piece of information into appropriate categories a
 
 Guidelines:
 1. Each category in the JSON should be unique.
-2. If a category has multiple values, separate them with a slash (/).
+2. If a category has multiple values, separate them with a slash (/). Except for "Person Name" and "Company Name" category.
 3. If information doesn't fit into the predefined categories, you may ignore it.
+4. If the information exists in multiple languages, please use "Chinese" as the main language. First name, last name and first name must be in the same language.
 5. If the provided information contains multiple "different" instances of email addresses, phone numbers, or addresses, ensure they are separated and classified accordingly in the output JSON. For example, if the string is "example@gmail.com 886979666666", they will be classified into emails and mobile phone numbers.
 
 Specific instructions for key categories:
@@ -37,16 +36,28 @@ Specific instructions for key categories:
    - For Chinese names, the last name (family name) comes first, followed by the first name (given name).
 
 2. Company Name: The name of the organization or business.
+   - This could be a company, hospital, clinic, medical center, or other healthcare institution.
+   - Examples: "ABC Corporation", "St. Mary's Hospital", "City General Medical Center"
 
 3. Department
+   - Common departments include: Research & Development, Marketing, Human Resources, Finance, Operations, Sales, Customer Service.
+   - In healthcare settings, this might include: Cardiology, Neurology, Oncology, Pediatrics, Emergency Medicine, Radiology, Ophthalmology, etc.
+   - Department names often end with words like "Department", "Division", "Team", "Unit", or "Ward".
+   - Be cautious not to confuse departments with job titles.
 
 4. Job Title: The person's role or position within the company.
+   - This describes the person's role or position within the company.
+   - Common examples: CEO, CFO, Director of Marketing, Senior Software Engineer, Project Manager, Sales Representative.
+   - Medical examples: Chief of Surgery, Head Nurse, Radiologist, Attending Physician, Resident Doctor.
+   - Job titles often include level indicators like "Senior", "Junior", "Assistant", "Associate".
+   - Some job titles may include department information (e.g., "Marketing Manager", "Head of Pediatrics").
 
 5. Contact Information: Carefully distinguish between Mobile Phone, Telephone (office), and Fax numbers.
 
 6. Address
 
 7. Website
+   - Usually starts with "www." or contains domain extensions like ".com", ".org", etc.
 
 Output the classified information in the following JSON format without any additional characters or formatting:
 {
@@ -102,7 +113,6 @@ Output the classified information in the following JSON format without any addit
     ]
 }
 """
- 
 
 def process_business_card(ocr_text):
     prompt = [
@@ -196,6 +206,8 @@ def split_data(response):
                 ADDRESS2 = addresses[1]
         elif category == 'Website':
             WEBSITE = value
+        else:
+            print('not found')
     
     print("NAME:", NAME)
     print("FIRST NAME:", FIRST_NAME)
@@ -218,61 +230,6 @@ def split_data(response):
     print("ADDRESS2:", ADDRESS2)
     print("WEBSITE:", WEBSITE)
     
+    if NAME == None:
+        NAME = 'NotFound'
     return NAME, FIRST_NAME, LAST_NAME, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE
-
-
-# split_data('''
-# {
-#     "businessCard": [
-#         {
-#             "category": "Person Name",
-#             "value": "陳柏翰"
-#         },
-#         {
-#             "category": "First Name",
-#             "value": "柏翰"
-#         },
-#         {
-#             "category": "Last Name",
-#             "value": "陳"
-#         },
-#         {
-#             "category": "Company Name",
-#             "value": "CancerFree"
-#         },
-#         {
-#             "category": "Department",
-#             "value": "Biotech"
-#         },
-#         {
-#             "category": "Job Title",
-#             "value": "CEO"
-#         },
-#         {
-#             "category": "Mobile Phone Number",
-#             "value": "+886-905-071-010"
-#         },
-#         {
-#             "category": "Telephone Number",
-#             "value": "+1-201-238-3117"
-#         },
-#         {
-#             "category": "Fax Number",
-#             "value": ""
-#         },
-#         {
-#             "category": "Email",
-#             "value": "Pohan.chen@cancerfree.io"
-#         },
-#         {
-#             "category": "Address",
-#             "value": "郵便番号114台湾台北市内湖区瑞光路258巷56号3階 2/美國紐約州紐約市瓦里克街180號6樓，郵遞區號10014/114台灣台北市內湖區瑞光路258巷56號3樓之2"
-#         },
-#         {
-#             "category": "Website",
-#             "value": ""
-#         }
-#     ]
-# }''')
-
-#process_business_card('陳柏翰\nCEO\nPohan.chen@cancerfree.io\n郵便番号114台湾台北市内湖区瑞光路258巷56号3階 2\n美國紐約州紐約市瓦里克街180號6樓，郵遞區號10014\n114台灣台北市內湖區瑞光路258巷56號3樓之2\n+886-905-071-010/+1-201-238-3117\nCancerFree\nBiotech\n精密医療 再発明')

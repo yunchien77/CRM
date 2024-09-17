@@ -28,6 +28,7 @@ FIELD_ID_18 = '1002696'
 FIELD_ID_20 = '1002910'
 FIELD_ID_21 = '1002928'
 FIELD_ID_22 = '1002929'
+FIELD_ID_OCR = '1004229'
 
 load_dotenv()
 API_KEY = os.getenv('RAGIC_API_KEY')
@@ -42,7 +43,7 @@ params = {
     'v': 3
 }
 
-def createEntity_unconfirmed(NAME, FIRST, LAST, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE, url):
+def createEntity_unconfirmed(OCR, NAME, FIRST, LAST, COMPANY, DEPART1, DEPART2, TITLE1, TITLE2, TITLE3, MOBILE1, MOBILE2, TEL1, TEL2, FAX1, FAX2, EMAIL1, EMAIL2, ADDRESS1, ADDRESS2, WEBSITE, url):
     data = {
         FIELD_ID_1: NAME,        
         FIELD_ID_2: COMPANY,     
@@ -64,7 +65,8 @@ def createEntity_unconfirmed(NAME, FIRST, LAST, COMPANY, DEPART1, DEPART2, TITLE
         FIELD_ID_18: WEBSITE,
         FIELD_ID_20: url,
         FIELD_ID_21: FIRST,
-        FIELD_ID_22: LAST
+        FIELD_ID_22: LAST,
+        FIELD_ID_OCR: OCR
     }
 
     response = requests.post(API_ENDPOINT_LISTING_PAGE, params=params, json=data, headers={'Authorization': 'Basic '+API_KEY})

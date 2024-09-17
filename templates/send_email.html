@@ -6,6 +6,11 @@
     <title>Send Emails</title>
     <script src="{{ url_for('static', filename='menu.js') }}" defer></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script>
+        document.getElementById('logoutForm').addEventListener('submit', function (event) {
+            alert('Logout ><')
+        });
+    </script>
     <link rel="stylesheet" href="../static/menu.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
@@ -19,8 +24,7 @@
             font-size: 12px;
             color: #888;
         }
-    </style>
-    <style>
+
         .recipient-type-selection {
             margin-bottom: 15px;
         }
@@ -110,13 +114,15 @@
                 <input type="text" name="email_subject" required><br>
 
                 <label class="required-field">Email body:</label>
-                <small>Use the {name} tag to add a corresponding name</small>
+                <small>Use the {name} tag to add a corresponding name.
+                    <br>You can also use {company}, {title1}, {title2}, {title3}, {department1}, {department2} tags.
+                </small>
 
                 <button type="button" onclick="addHyperlink()">Insert hyperlink</button><br>
 
                 <textarea id="emailContent" name="email_content" rows="10" cols="40" required></textarea><br>
 
-                <label>Attach a file: (Less than 10M)</label>
+                <label>Attach files: (Less than 10M)</label>
                 <input type="file" name="attachments" multiple><br>
 
                 <input type="submit" value="Send">
@@ -124,7 +130,7 @@
         </div>
     </div>
 
-    <div class="version">v.4</div>
+    <div class="version">v.6</div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
@@ -136,25 +142,14 @@
             alert('Failed to send emails. Please try again.');
         }
 
-        document.getElementById('logoutForm').addEventListener('submit', function (event) {
-            alert('Logout ><')
-        });
+        // document.getElementById('logoutForm').addEventListener('submit', function (event) {
+        //     alert('Logout ><')
+        // });
 
         function addHyperlink() {
             const emailContent = document.getElementById('emailContent');
             emailContent.value += '<a href="網址">顯示名稱</a>';
         }
-
-        // function selectRecipientType(type) {
-        //     document.getElementById('group_selection').style.display = type === 'group' ? 'block' : 'none';
-        //     document.getElementById('individual_selection').style.display = type === 'individual' ? 'block' : 'none';
-
-        //     document.getElementById('recipient_type').value = type;
-
-        //     if (type === 'individual') {
-        //         loadIndividualList();
-        //     }
-        // }
 
         function selectRecipientType(type) {
             const groupSelection = document.getElementById('group_selection');

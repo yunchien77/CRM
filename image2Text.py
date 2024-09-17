@@ -16,6 +16,7 @@ def convert_to_jpg(input_file, output_file):
         img = img.convert("RGB")
         img.save(output_file, "JPEG", quality=95)
         print(f"Successfully converted {input_file} to {output_file}")
+        os.remove(input_file)  # 刪除原始文件
         return True
     except Exception as e:
         print(f"Error converting {input_file} to {output_file}: {e}")
@@ -49,23 +50,30 @@ def resize_image(img_path, max_size_kb=1024):
         return None
 
 def ocr_image(img_path, ocr_engine, ocr_language):
-    # Convert HEIF to JPEG if needed
+    original_path = img_path
+    
+    # 轉換HEIF到JPEG
     if os.path.splitext(img_path)[1].lower() in ['.heif', '.heic']:
         jpg_path = os.path.splitext(img_path)[0] + ".jpg"
-        if not convert_to_jpg(img_path, jpg_path):
-            return None
-        img_path = jpg_path
+        if convert_to_jpg(img_path, jpg_path):
+            img_path = jpg_path
+        else:
+            return None, None
 
+    # 調整圖像大小
     img_path = resize_image(img_path)
+    if img_path != original_path and os.path.exists(original_path):
+        os.remove(original_path)
+
     img = cv2.imread(img_path)
 
     if img is None:
         print("Error: Could not read the image.")
-        return None
+        return None, None
 
     # OCR API
     api_url = "https://api.ocr.space/parse/image"
-    api_key = os.getenv('OCR_API_KEY')
+    api_keys = [os.getenv('OCR_API_KEY'), os.getenv('OCR_API_KEY2')]
 
     # Image Compression & Conversion
     pil_image = Image.open(img_path)
@@ -76,35 +84,45 @@ def ocr_image(img_path, ocr_engine, ocr_language):
         # Convert image to byte stream
         _, img_encoded = cv2.imencode('.' + image_format, img)
         files = {"file": ("image." + image_format, img_encoded.tobytes(), "image/" + image_format)}
-        data = {
-            "apikey": api_key,
-            #"OCREngine": 2, # engine 1(multi-language) or 2(character)
-            #"language": 'cht',  # default: eng
-            "OCREngine": ocr_engine, # engine 1(multi-language) or 2(character)
-            "language": ocr_language
-            #"isOverlayRequired": True   # provide location info
-        }
+        
+        for api_key in api_keys:
+            data = {
+                "apikey": api_key,
+                "OCREngine": ocr_engine,
+                "language": ocr_language
+            }
 
-        result = requests.post(api_url, files=files, data=data)
+            result = requests.post(api_url, files=files, data=data)
+            result_json = result.json()
+            print(result_json)
 
-        result_json = result.json()
-        print(result_json)
+            if not result_json.get('IsErroredOnProcessing', False):
+                parsed_text = result_json['ParsedResults'][0]['ParsedText']
+                return parsed_text, img_path
 
+            print(f"Processing failed with API key. Trying next key if available.")
 
-        parsed_text = result_json['ParsedResults'][0]['ParsedText']
-        return parsed_text, img_path
+        print("Error: Processing failed with all available API keys.")
+        return None, None
 
     else:
         print("Error: Unsupported or unknown image file format.")
-        return None
+        return None, None
 
 def imageProcess(img_path):
-    # Convert HEIF to JPEG if needed
+    original_path = img_path
+    
+    # 轉換HEIF到JPEG
     if os.path.splitext(img_path)[1].lower() in ['.heif', '.heic']:
         jpg_path = os.path.splitext(img_path)[0] + ".jpg"
-        if not convert_to_jpg(img_path, jpg_path):
+        if convert_to_jpg(img_path, jpg_path):
+            img_path = jpg_path
+        else:
             return None
-        img_path = jpg_path
 
+    # 調整圖像大小
     img_path = resize_image(img_path)
+    if img_path != original_path and os.path.exists(original_path):
+        os.remove(original_path)
+
     return img_path

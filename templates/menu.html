@@ -1,39 +1,10 @@
 <nav class="menu">
     <ul>
-        <li><a href="/">單一名片辨識<br>Single Card Identification</a></li>
-        <li><a href="/multiupload">多張名片辨識<br>Bulk Card Identification</a></li>
-        <li><a href="/excelupload">表單上傳<br>Excel Data Upload</a></li>
+        <li><a href="{{ url_for('home') }}">單一名片辨識<br>Single Card Identification</a></li>
+        <li><a href="{{ url_for('multiupload') }}">多張名片辨識<br>Bulk Card Identification</a></li>
+        <li><a href="{{ url_for('excelupload') }}">表單上傳<br>Excel Data Upload</a></li>
         <li><a href="https://www.ragic.com/" target="_blank">前往資料庫<br>Ragic</a></li>
-        <li><a href="/login">群組寄信<br>Outlook Group Email</a></li>
-        <!-- <li>
-            <a href="#linkedin-search" onclick="showLinkedinForm()">Linkedin Search</a>
-            <div id="linkedin-form" style="display: none;">
-                <form id="linkedin-credentials-form">
-                    <input type="text" id="linkedin-username" placeholder="LinkedIn Username" required>
-                    <input type="password" id="linkedin-password" placeholder="LinkedIn Password" required>
-                    <button type="submit">Submit</button>
-                </form>
-                <div id="linkedin-search-status"></div>
-            </div>
-        </li>
-        <li>
-            <a href="#google-search" onclick="showGoogleForm()">Google Search</a>
-            <div id="google-form" style="display: none;">
-                <form id="google-search-form">
-                    <button type="submit">Start</button>
-                </form>
-                <div id="google-search-status"></div>
-            </div>
-        </li>
-        <li>
-            <a href="#google-custom-search" onclick="showCustomForm()">Google Custom Search</a>
-            <div id="google-custom-form" style="display: none;">
-                <form id="google-custom-search-form">
-                    <button type="submit">Start</button>
-                </form>
-                <div id="google-custom-search-status"></div>
-            </div>
-        </li> -->
+        <li><a href="{{ url_for('send_email') }}">群組寄信<br>Outlook Group Email</a></li>
         <li>
             <a href="#social-search" onclick="toggleSocialSearch()">社交帳號搜尋<br>Social Search</a>
             <ul id="social-search-menu" style="display: none;">
@@ -68,9 +39,10 @@
                 </li>
             </ul>
         </li>
+        <!-- <li><a href="{{ url_for('logout') }}">登出<br>Logout</a></li> -->
 
         <li class="bottom-image">
-            <a href="https://hackmd.io/@IULX1iLoSCGSsQacAagZmA/ryVPD8xs0" target="_blank" class="bottom-left-icon">
+            <a href="https://hackmd.io/3wllhGagTyCMdyQRdfUyVQ" target="_blank" class="bottom-left-icon">
                 <svg width="16px" height="16px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="m 8 0 c -4.410156 0 -8 3.589844 -8 8 s 3.589844 8 8 8 s 8 -3.589844 8 -8 s -3.589844 -8 -8 -8 z m 0 2 c 3.332031 0 6 2.667969 6 6 s -2.667969 6 -6 6 s -6 -2.667969 -6 -6 s 2.667969 -6 6 -6 z m 0 1.875 c -0.621094 0 -1.125 0.503906 -1.125 1.125 s 0.503906 1.125 1.125 1.125 s 1.125 -0.503906 1.125 -1.125 s -0.503906 -1.125 -1.125 -1.125 z m -1.523438 3.125 c -0.265624 0.011719 -0.476562 0.230469 -0.476562 0.5 c 0 0.277344 0.222656 0.5 0.5 0.5 h 0.5 v 3 h -0.5 c -0.277344 0 -0.5 0.222656 -0.5 0.5 s 0.222656 0.5 0.5 0.5 h 3 c 0.277344 0 0.5 -0.222656 0.5 -0.5 s -0.222656 -0.5 -0.5 -0.5 h -0.5 v -4 h -2.5 c -0.007812 0 -0.015625 0 -0.023438 0 z m 0 0"
