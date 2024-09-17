@@ -32,6 +32,7 @@ import uuid
 from datetime import datetime
 import subprocess
 import os
+import json
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -314,6 +315,12 @@ def get_individual_list():
     individual_list = get_recipient_individual()
     return jsonify(individual_list)
 
+@app.route('/get_recipients_by_tag', methods=['POST'])
+def get_recipients_by_tag():
+    tag = request.json['tag']
+    recipients = get_recipient_info(tag)
+    return jsonify(recipients)
+
 def send_email_to_customer(email, password, customer, subject, content, attachment_paths, from_email, reply_to):
     try:
         receiver_email = customer['email']
@@ -413,10 +420,12 @@ def send_email():
         attachments = request.files.getlist('attachments')
         from_email = request.form.get('from_email')
         reply_to = request.form.get('reply_to')
+        selected_recipients = request.form.get('selected_recipients')  # <-- 修改點：接收選中的收件人
 
         if recipient_type == 'group':
-            recipient_group = request.form.get('recipient_group')
-            customers = get_recipient_info(recipient_group)
+            # 使用前端刪減後的收件人列表
+            customers = json.loads(selected_recipients)  # <-- 修改點：將傳遞過來的收件人列表轉為 Python 物件
+            print(customers)
         elif recipient_type == 'individual':
             selected_id = request.form.get('selected_individual')
             customers = [next(item for item in individual_list if item["id"] == selected_id)]
@@ -432,6 +441,7 @@ def send_email():
                     attachment.save(attachment_path)
                     attachment_paths.append(attachment_path)
 
+            # 發送郵件給經過過濾的客戶
             success = send_emails_to_customers(customers, email_subject, email_content, attachment_paths, from_email, reply_to)
             if success:
                 return redirect(url_for('send_email', status='sent'))
@@ -440,7 +450,6 @@ def send_email():
             return redirect(url_for('send_email'))
 
     return render_template('send_email.html', taglist=taglist, email=session['email'], individual_list=individual_list)
-
 
 @app.route('/logout')
 @login_required

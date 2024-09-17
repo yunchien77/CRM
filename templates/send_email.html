@@ -47,6 +47,26 @@
             background-color: #209675;
             color: white;
         }
+
+        .recipient-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .recipient-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+        }
+
+        .remove-recipient {
+            cursor: pointer;
+            color: rgb(159, 7, 7);
+        }
     </style>
 </head>
 
@@ -110,6 +130,8 @@
                     </select>
                 </div>
 
+                <div id="recipient_list" class="recipient-list" style="display: none;"></div>
+
                 <br><label class="required-field">Email subject:</label>
                 <input type="text" name="email_subject" required><br>
 
@@ -124,6 +146,8 @@
 
                 <label>Attach files: (Less than 10M)</label>
                 <input type="file" name="attachments" multiple><br>
+
+                <input type="hidden" id="selected_recipients" name="selected_recipients">
 
                 <input type="submit" value="Send">
             </form>
@@ -142,10 +166,6 @@
             alert('Failed to send emails. Please try again.');
         }
 
-        // document.getElementById('logoutForm').addEventListener('submit', function (event) {
-        //     alert('Logout ><')
-        // });
-
         function addHyperlink() {
             const emailContent = document.getElementById('emailContent');
             emailContent.value += '<a href="網址">顯示名稱</a>';
@@ -156,7 +176,7 @@
             const individualSelection = document.getElementById('individual_selection');
             const recipientTypeInput = document.getElementById('recipient_type');
             const groupSelect = document.getElementById('recipient_group');
-            const individualSelect = document.getElementById('individual_select');
+            const recipientList = document.getElementById('recipient_list');
 
             recipientTypeInput.value = type;
 
@@ -164,12 +184,14 @@
                 groupSelection.style.display = 'block';
                 individualSelection.style.display = 'none';
                 groupSelect.required = true;
-                individualSelect.required = false;
+                recipientList.style.display = 'block';
             } else if (type === 'individual') {
                 groupSelection.style.display = 'none';
                 individualSelection.style.display = 'block';
                 groupSelect.required = false;
-                individualSelect.required = true;
+                groupSelect.value = '';
+                recipientList.innerHTML = '';
+                recipientList.style.display = 'none';
                 loadIndividualList();
             }
         }
@@ -217,6 +239,87 @@
                         individualSelection.style.display = 'block';
                     }
                 });
+            });
+        });
+
+        $(document).ready(function () {
+            $('#recipient_group').change(function () {
+                var selectedTag = $(this).val();
+                if (selectedTag) {
+                    $.ajax({
+                        url: '/get_recipients_by_tag',
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ tag: selectedTag }),
+                        success: function (response) {
+                            displayRecipientList(response);
+                        },
+                        error: function (error) {
+                            console.error('Error fetching recipients:', error);
+                        }
+                    });
+                } else {
+                    $('#recipient_list').hide();
+                }
+            });
+
+            function displayRecipientList(recipients) {
+                var listHtml = '';
+                recipients.forEach(function (recipient) {
+                    listHtml += '<div class="recipient-item" data-id="' + recipient.id + '" ' +
+                        'data-company="' + recipient.company + '" ' +
+                        'data-title1="' + recipient.title1 + '" ' +
+                        'data-title2="' + recipient.title2 + '" ' +
+                        'data-title3="' + recipient.title3 + '" ' +
+                        'data-department1="' + recipient.department1 + '" ' +
+                        'data-department2="' + recipient.department2 + '" ' +
+                        'data-emailtitle="' + recipient.emailtitle + '">' +
+                        '<span>' + recipient.name + ' (' + recipient.email + ')</span>' +
+                        '<span class="remove-recipient">✖</span>' +
+                        '</div>';
+                });
+                $('#recipient_list').html(listHtml).show();
+            }
+
+            // 更新選中的收件人列表
+            function updateSelectedRecipients() {
+                var selectedRecipients = [];
+                $('#recipient_list .recipient-item').each(function () {
+                    var id = $(this).data('id');
+                    var name = $(this).find('span:first').text().split('(')[0].trim();
+                    var email = $(this).find('span:first').text().match(/\((.*?)\)/)[1];
+                    var company = $(this).data('company');
+                    var title1 = $(this).data('title1');
+                    var title2 = $(this).data('title2');
+                    var title3 = $(this).data('title3');
+                    var department1 = $(this).data('department1');
+                    var department2 = $(this).data('department2');
+                    var emailtitle = $(this).data('emailtitle');
+                    selectedRecipients.push({
+                        id: id,
+                        name: name,
+                        email: email,
+                        company: company,
+                        title1: title1,
+                        title2: title2,
+                        title3: title3,
+                        department1: department1,
+                        department2: department2,
+                        emailtitle: emailtitle
+                    });
+                });
+                $('#selected_recipients').val(JSON.stringify(selectedRecipients)); // 更新收件人列表
+            }
+
+            // 在移除收件人時更新收件人列表
+            $(document).on('click', '.remove-recipient', function () {
+                $(this).parent().remove();
+                updateSelectedRecipients(); // 移除收件人後更新列表
+            });
+
+            // 提交表單前更新收件人列表
+            $('#emailForm').submit(function (e) {
+                updateSelectedRecipients(); // 修改點：表單提交前更新收件人列表
             });
         });
     </script>

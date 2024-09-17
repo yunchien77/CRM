@@ -46,7 +46,7 @@ def get_recipient_info(target_tag):
             else: 
                 etitle = name
 
-        if target_tag in tags:
+        if email != "" and target_tag in tags:
             customers.append({'id': id, 'name': name, 'email': email, 'tags': tags, 'company': company, 'title1': title1, 'title2': title2, 'title3': title3, 'department1': department1, 'department2': department2, 'emailtitle': etitle})
 
     for customer in customers:
@@ -88,7 +88,8 @@ def get_recipient_individual():
             else: 
                 etitle = name
 
-        customers_list.append({'id': id, 'name': name, 'email': email, 'tags': tags, 'company': company, 'title1': title1, 'title2': title2, 'title3': title3, 'department1': department1, 'department2': department2, 'emailtitle': etitle})
+        if email != "":
+            customers_list.append({'id': id, 'name': name, 'email': email, 'tags': tags, 'company': company, 'title1': title1, 'title2': title2, 'title3': title3, 'department1': department1, 'department2': department2, 'emailtitle': etitle})
 
     # for customer in customers_list:
     #     print(f"ID: {customer['id']}\n抬頭: {customer['emailtitle']}\n姓名: {customer['name']}\n電子郵件: {customer['email']}\n")
