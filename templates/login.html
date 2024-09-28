@@ -15,6 +15,16 @@
             font-size: 12px;
             color: #888;
         }
+
+        .microsoft-login {
+            max-width: 50%;
+            /* 限制圖片寬度最大為容器寬度 */
+            /* max-height: 150px;
+            限制圖片高度，根據需要調整 */
+            display: block;
+            margin: 0 auto;
+            /* 對齊中間 */
+        }
     </style>
 </head>
 
@@ -39,6 +49,7 @@
         </div>
         {% endif %}
         {% endwith %}
+
         <form method="POST" action="{{ url_for('login') }}">
             <label>Email:</label>
             <input type="text" name="email" required><br>
@@ -47,10 +58,21 @@
             <input type="password" name="password" required><br>
 
             <input type="submit" value="Login">
-        </form>
+        </form><br>
+
+        <div class="login-option">
+            <img src="/static/microsoft-login.png" alt="Microsoft Login" class="microsoft-login"
+                onclick="microsoftLogin()">
+        </div>
     </div>
 
-    <div class="version">v.6</div>
+    <div class="version">v.8</div>
 </body>
+
+<script>
+    function microsoftLogin() {
+        window.location.href = "/microsoft_login";
+    }
+</script>
 
 </html>

@@ -35,6 +35,7 @@ def get_first_linkedin_result(query):
         return None
 
 def customSearch():
+    print("start customSearch...")
     try:
         people_list = getAllPeopleSeperate()
         for person in people_list:
@@ -48,8 +49,9 @@ def customSearch():
             else:
                 print(f'Found: {result}')
                 updateData(person['id'], result)  # 更新資料到 Ragic
+            # print(query)
     except Exception as e:
         print(f'An error occurred: {e}')
 
-if __name__ == "__main__":
-    search()
+# if __name__ == "__main__":
+#     search()

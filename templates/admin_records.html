@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/menu.css">
+    <script src="{{ url_for('static', filename='menu.js') }}" defer></script>
+    <title>Admin Records</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <a class="toggle-nav" href="#" onclick="toggleMenu(event)">&#9776;</a>
+    {% include 'menu.html' %}
+    <h1>Admin Records</h1>
+
+    <h2>Single Card Recognition Records</h2>
+    <table>
+        <tr>
+            <th>User Email</th>
+            <th>Timestamp</th>
+            <th>Success</th>
+            <th>Card Owner</th>
+            <th>Error Message</th>
+        </tr>
+        {% for record, user in single_card_records %}
+        <tr>
+            <td>{{ user.email }}</td>
+            <td>{{ record.timestamp }}</td>
+            <td>{{ "Success" if record.success else "Failure" }}</td>
+            <td>{{ record.card_owner or "N/A" }}</td>
+            <td>{{ record.error_message or "N/A" }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Multi Card Recognition Records</h2>
+    <table>
+        <tr>
+            <th>User Email</th>
+            <th>Timestamp</th>
+            <th>Success Count</th>
+            <th>Failure Count</th>
+            <th>Error Message</th>
+        </tr>
+        {% for record, user in multi_card_records %}
+        <tr>
+            <td>{{ user.email }}</td>
+            <td>{{ record.timestamp }}</td>
+            <td>{{ record.success_count }}</td>
+            <td>{{ record.failure_count }}</td>
+            <td>{{ record.error_message or "N/A" }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Email Sending Records</h2>
+    <table>
+        <tr>
+            <th>User Email</th>
+            <th>Timestamp</th>
+            <th>Success Count</th>
+            <th>Failure Count</th>
+            <th>Recipient Group</th>
+            <th>Individual Recipient</th>
+        </tr>
+        {% for record, user in email_records %}
+        <tr>
+            <td>{{ user.email }}</td>
+            <td>{{ record.timestamp }}</td>
+            <td>{{ record.success_count }}</td>
+            <td>{{ record.failure_count }}</td>
+            <td>{{ record.recipient_group or "N/A" }}</td>
+            <td>{{ record.individual_recipient or "N/A" }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Excel Upload Records</h2>
+    <table>
+        <tr>
+            <th>User Email</th>
+            <th>Timestamp</th>
+            <th>Success</th>
+            <th>Filename</th>
+            <th>Error Message</th>
+        </tr>
+        {% for record, user in excel_upload_records %}
+        <tr>
+            <td>{{ user.email }}</td>
+            <td>{{ record.timestamp }}</td>
+            <td>{{ "Success" if record.success else "Failure" }}</td>
+            <td>{{ record.filename }}</td>
+            <td>{{ record.error_message or "N/A" }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>

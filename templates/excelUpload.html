@@ -73,47 +73,11 @@
         <!--<div id="upload-status"></div>-->
 
         <div class="version">
-            v.6
+            v.8
         </div>
     </div>
 
     <script>
-        // function uploadExcel() {
-        //     var fileInput = document.getElementById('excel-file');
-        //     var file = fileInput.files[0];
-        //     var formData = new FormData();
-        //     formData.append('excel_file', file);
-
-        //     document.getElementById('loading').style.display = 'block';
-        //     /*document.getElementById('upload-status').innerHTML = '';*/
-
-        //     fetch('/upload-excel', {
-        //         method: 'POST',
-        //         body: formData
-        //     })
-        //         .then(response => response.json())
-        //         .then(data => {
-        //             document.getElementById('loading').style.display = 'none';
-        //             if (data.error) {
-        //                 /*document.getElementById('upload-status').innerHTML = 'Error: ' + data.error;*/
-        //                 alert('Error: ' + data.message);
-        //             } else {
-        //                 /*document.getElementById('upload-status').innerHTML = data.message;*/
-        //                 alert(data.message);
-        //             }
-        //         })
-        //         .catch(error => {
-        //             document.getElementById('loading').style.display = 'none';
-        //             console.error('Error:', error);
-        //             document.getElementById('upload-status').innerHTML = 'An error occurred while uploading the file.';
-        //         });
-        // }
-
-        // function toggleMenu(event) {
-        //     event.preventDefault();
-        //     var menu = document.querySelector('.menu');
-        //     menu.classList.toggle('show');
-        // }
         function uploadExcel() {
             var fileInput = document.getElementById('excel-file');
             var file = fileInput.files[0];
@@ -148,11 +112,11 @@
                 });
         }
 
-        function toggleMenu(event) {
-            event.preventDefault();
-            var menu = document.querySelector('.menu');
-            menu.classList.toggle('show');
-        }
+        // function toggleMenu(event) {
+        //     event.preventDefault();
+        //     var menu = document.querySelector('.menu');
+        //     menu.classList.toggle('show');
+        // }
     </script>
 </body>
 

@@ -51,7 +51,7 @@ def getAllPeopleSeperate():
     if data:
         people_list = []
         for key, value in data.items():
-            if value['相關連結'] == '':
+            if value['Related Link'] == '':
                 people_list.append({
                     "id": key,
                     "name": value['Name'],
