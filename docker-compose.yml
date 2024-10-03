@@ -7,8 +7,13 @@ services:
     volumes:
       # - .:/app
       - app:/app
+      - data:/app/data
+      - /etc/localtime:/etc/localtime:ro 
+      - /etc/timezone:/etc/timezone:ro
     environment:
       FLASK_ENV: production
+      SQLALCHEMY_DATABASE_URI: sqlite:////app/data/admin.db
+      TZ: ${GENERIC_TIMEZONE}
     restart: always
     deploy:
       resources:
@@ -43,6 +48,10 @@ services:
     volumes:
       - traefik_data:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/localtime:/etc/localtime:ro  
+      - /etc/timezone:/etc/timezone:ro
+    environment:
+      TZ: ${GENERIC_TIMEZONE}
     networks:
       - traefik_network
 
@@ -61,6 +70,12 @@ volumes:
       o: bind
       device: /mnt/disks/disk-data/crm/app
 
+  data:  
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /mnt/disks/disk-data/crm/data
 
 networks:
   traefik_network:

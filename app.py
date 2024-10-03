@@ -30,15 +30,12 @@ from pypinyin import lazy_pinyin
 
 from concurrent.futures import ThreadPoolExecutor
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 import subprocess
 import os
 import json
 
 from msal import ConfidentialClientApplication
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
 from email import encoders
 import base64
 from flask_sqlalchemy import SQLAlchemy
@@ -54,7 +51,9 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 EMAIL_UPLOAD_FOLDER = 'uploads'
 app.config['EMAIL_UPLOAD_FOLDER'] = EMAIL_UPLOAD_FOLDER
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///admin.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///admin.db'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI', 'sqlite:////app/data/admin.db')
 db = SQLAlchemy(app)
 
 load_dotenv()
@@ -78,13 +77,13 @@ class User(db.Model):
 class LoginRecord(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    login_time = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    login_time = db.Column(db.DateTime, nullable=False, default=datetime.now())
 
 # 單一名片辨識記錄
 class SingleCardRecord(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.now())
     success = db.Column(db.Boolean, nullable=False)
     card_owner = db.Column(db.String(120))
     error_message = db.Column(db.String(255))
@@ -93,7 +92,7 @@ class SingleCardRecord(db.Model):
 class MultiCardRecord(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.now())
     success_count = db.Column(db.Integer, nullable=False)
     failure_count = db.Column(db.Integer, nullable=False)
     error_message = db.Column(db.String(255))
@@ -102,7 +101,7 @@ class MultiCardRecord(db.Model):
 class EmailRecord(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.now())
     success_count = db.Column(db.Integer, nullable=False)
     failure_count = db.Column(db.Integer, nullable=False)
     recipient_group = db.Column(db.String(120))
@@ -112,7 +111,7 @@ class EmailRecord(db.Model):
 class ExcelUploadRecord(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.now())
     success = db.Column(db.Boolean, nullable=False)
     filename = db.Column(db.String(255))
     error_message = db.Column(db.String(255))
@@ -126,13 +125,19 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-@app.route('/login_records')
+@app.route('/admin')
+@admin_required
+def admin_interface():
+    users = User.query.all()
+    return render_template('admin_interface.html', users=users, admin_users=ADMIN_USERS, active_page='users')
+
+@app.route('/admin/login_records')
 @admin_required
 def login_records():
     records = db.session.query(LoginRecord, User).join(User).order_by(LoginRecord.login_time.desc()).all()
-    return render_template('login_records.html', records=records, admin_users=ADMIN_USERS)
+    return render_template('login_records.html', records=records, admin_users=ADMIN_USERS, active_page='login_records')
 
-@app.route('/admin_records')
+@app.route('/admin/admin_records')
 @admin_required
 def admin_records():
     single_card_records = db.session.query(SingleCardRecord, User).join(User).order_by(SingleCardRecord.timestamp.desc()).all()
@@ -144,18 +149,39 @@ def admin_records():
                            single_card_records=single_card_records,
                            multi_card_records=multi_card_records,
                            email_records=email_records,
-                           excel_upload_records=excel_upload_records, admin_users=ADMIN_USERS)
+                           excel_upload_records=excel_upload_records, 
+                           admin_users=ADMIN_USERS,
+                           active_page='admin_records')
 
 ###################################################
 ####################    login   ###################
 ###################################################
+def session_timeout(seconds=3600):
+    def wrapper(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            now = datetime.now().timestamp()
+            last_active = session.get('last_active')
+            
+            if last_active is None or (now - last_active > seconds):
+                session.clear()
+                return redirect(url_for('login'))
+            
+            # 只有当距离上次更新超过5分钟时才更新last_active
+            if now - last_active > 300:
+                session['last_active'] = now
+            
+            return f(*args, **kwargs)
+        return decorated_function
+    return wrapper
+
 # Authentication decorator
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'email' not in session:
             return redirect(url_for('login'))
-        return f(*args, **kwargs)
+        return session_timeout()(f)(*args, **kwargs)
     return decorated_function
 
 @app.route('/', methods=['GET', 'POST'])
@@ -176,6 +202,7 @@ def login():
 
             session['email'] = email
             session['password'] = password
+            session['last_active'] = datetime.now().timestamp()
 
             # 查詢或新增用戶
             user = User.query.filter_by(email=email.lower()).first()
@@ -185,7 +212,8 @@ def login():
                 db.session.commit()
 
             # 記錄登入
-            login_record = LoginRecord(user_id=user.id)
+            current_time = datetime.now()
+            login_record = LoginRecord(user_id=user.id, login_time=current_time)
             db.session.add(login_record)
             db.session.commit()
 
@@ -228,6 +256,7 @@ def auth_callback():
         ).json()
         email = user_info.get('mail') or user_info.get('userPrincipalName')
         session['email'] = email
+        session['last_active'] = datetime.now().timestamp()
         
         # 記錄登入
         user = User.query.filter_by(email=email.lower()).first()
@@ -236,7 +265,12 @@ def auth_callback():
             db.session.add(user)
             db.session.commit()
 
-        login_record = LoginRecord(user_id=user.id)
+        # login_record = LoginRecord(user_id=user.id)
+        # db.session.add(login_record)
+        # db.session.commit()
+
+        current_time = datetime.now()
+        login_record = LoginRecord(user_id=user.id, login_time=current_time)
         db.session.add(login_record)
         db.session.commit()
 
@@ -400,7 +434,7 @@ def confirm():
 
         # 記錄成功的單張名片上傳
         user = User.query.filter_by(email=session['email']).first()
-        record = SingleCardRecord(user_id=user.id, success=True, card_owner=NAME)
+        record = SingleCardRecord(timestamp=datetime.now(), user_id=user.id, success=True, card_owner=NAME)
         db.session.add(record)
         db.session.commit()
 
@@ -493,7 +527,7 @@ def upload_multi_file():
 
     # 記錄多張名片上傳結果
     user = User.query.filter_by(email=session['email'].lower()).first()
-    record = MultiCardRecord(user_id=user.id, success_count=success_count, failure_count=failure_count)
+    record = MultiCardRecord(timestamp=datetime.now(), user_id=user.id, success_count=success_count, failure_count=failure_count)
     db.session.add(record)
     db.session.commit()
 
@@ -739,6 +773,7 @@ def send_email():
             
             # 添加記錄
             record = EmailRecord(
+                timestamp=datetime.now(),
                 user_id=User.query.filter_by(email=session['email'].lower()).first().id,
                 success_count=success_count,
                 failure_count=failure_count,
@@ -759,8 +794,6 @@ def send_email():
 @app.route('/logout')
 @login_required
 def logout():
-    # session.pop('email', None)
-    # session.pop('password', None)
     session.clear()
     return redirect(url_for('login'))
 
@@ -796,6 +829,7 @@ def upload_excel():
             result = excel(file_path)
             # 添加記錄
             record = ExcelUploadRecord(
+                timestamp=datetime.now(),
                 user_id=User.query.filter_by(email=session['email'].lower()).first().id,
                 success=result,
                 filename=filename
@@ -849,8 +883,12 @@ def run_custom_search():
     except subprocess.CalledProcessError as e:
         return jsonify({"message": f"An error occurred."})
 
-if __name__ == '__main__':
+def init_db():
     with app.app_context():
         db.create_all()
-    #app.run(debug=True)
-    app.run(debug=True, host='localhost', port=5000)
+        print("Database tables created.")
+
+if __name__ == '__main__':
+    init_db()
+    app.run(debug=True)
+    #app.run(debug=True, host='localhost', port=5000)

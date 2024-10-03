@@ -1,19 +1,19 @@
 {% extends "base.html" %}
-{% block title %}Login Records{% endblock %}
+{% block title %}Users{% endblock %}
 {% block content %}
-<h2 class="mt-4">Login Records</h2>
+<h2 class="mt-4">User List</h2>
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>User Email</th>
-            <th>Login Time</th>
+            <th>ID</th>
+            <th>Email</th>
         </tr>
     </thead>
     <tbody>
-        {% for record, user in records %}
+        {% for user in users %}
         <tr>
+            <td>{{ user.id }}</td>
             <td>{{ user.email }}</td>
-            <td>{{ record.login_time }}</td>
         </tr>
         {% endfor %}
     </tbody>

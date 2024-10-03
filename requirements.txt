@@ -17,4 +17,4 @@ Werkzeug
 msal
 gunicorn
 opencv-python-headless
-
+flask_sqlalchemy

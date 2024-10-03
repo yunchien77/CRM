@@ -5,6 +5,8 @@
         <li><a href="{{ url_for('excelupload') }}">表單上傳<br>Excel Data Upload</a></li>
         <li><a href="https://www.ragic.com/" target="_blank">前往資料庫<br>Ragic</a></li>
         <li><a href="{{ url_for('send_email') }}">群組寄信<br>Outlook Group Email</a></li>
+
+        {% if session.get('email') %}
         <li>
             <a href="#social-search" onclick="toggleSocialSearch()">社交帳號搜尋<br>Social Search</a>
             <ul id="social-search-menu" style="display: none;">
@@ -39,11 +41,11 @@
                 </li>
             </ul>
         </li>
-        {% if session['email'] and session['email'].lower() in admin_users %}
-        <li><a href="{{ url_for('login_records') }}">登入紀錄<br>Login Records</a></li>
-        <li><a href="{{ url_for('admin_records') }}">管理員紀錄<br>Admin Records</a></li>
         {% endif %}
-        <!-- <li><a href="{{ url_for('logout') }}">登出<br>Logout</a></li> -->
+
+        {% if session['email'] and session['email'].lower() in admin_users %}
+        <li><a href="{{ url_for('admin_interface') }}">管理員介面<br>Admin Interface</a></li>
+        {% endif %}
 
         <li class="bottom-image">
             <a href="https://hackmd.io/3wllhGagTyCMdyQRdfUyVQ" target="_blank" class="bottom-left-icon">
